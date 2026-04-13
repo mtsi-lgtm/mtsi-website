@@ -1044,15 +1044,20 @@ function renderNav() {
 // PAGE ROUTING
 // ============================================================
 document.addEventListener('DOMContentLoaded',function(){
-  var isTouch = ('ontouchstart' in window) || window.matchMedia('(hover:none)').matches;
+  var isTouch = window.matchMedia('(hover:none)').matches || window.matchMedia('(pointer:coarse)').matches;
+  if (!isTouch) return;
   document.querySelectorAll('.nav-list > li').forEach(function(li){
     var dd = li.querySelector('.dropdown');
     if (!dd) return;
     var link = li.querySelector('a');
+    var origOnclick = link.getAttribute('onclick');
+    link.removeAttribute('onclick');
     link.addEventListener('click', function(e){
-      if (isTouch && !li.classList.contains('open')){
-        e.preventDefault(); e.stopPropagation();
-        document.querySelectorAll('.nav-list > li.open').forEach(function(o){ if(o!==li) o.classList.remove('open'); });
+      e.preventDefault();
+      if (li.classList.contains('open')) {
+        li.classList.remove('open');
+      } else {
+        document.querySelectorAll('.nav-list > li.open').forEach(function(o){ o.classList.remove('open'); });
         li.classList.add('open');
       }
     });
