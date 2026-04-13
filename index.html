@@ -639,65 +639,263 @@
 // ============================================================
 /* DD_START */
 const DEFAULT_DATA = {
-    credentials: { user: 'admin', pass: 'mtsi2026' },
-    images: { logo: '', heroBg: '' },
-    hero: {
-        badge: 'IFMA aðildarsamband',
-        title: 'Velkomin á heimasíðu <span>MTSÍ</span>',
-        text: 'Muay Thai Samband Íslands vinnur að því að efla, skipuleggja og vernda muay thai íþróttina á Íslandi. Við tryggjum örugg keppnisskilyrði og styðjum íþróttamenn okkar á alþjóðavettvangi.'
+    "credentials": {
+        "user": "admin",
+        "pass": "mtsi2026"
     },
-    nav: [
-        { title:'Um okkur', link:'#aboutSection', subs:[{title:'Um MTSÍ',link:'#aboutSection'},{title:'Stjórn',link:'#boardSection'},{title:'Saga muay thai',link:'#historySection'},{title:'Uppruni',link:'#historySection'}] },
-        { title:'Félög & meðlimir', link:'#clubsSection', subs:[{title:'Aðildarfélög',link:'#clubsSection'},{title:'Skrá nýtt félag',link:'#clubsSection'},{title:'Meðlimaskrá',link:'#clubsSection'}] },
-        { title:'Keppni', link:'#contestSection', subs:[{title:'Íslandsmót',link:'#contestSection'},{title:'Alþjóðakeppnir',link:'#contestSection'},{title:'Reglur',link:'#contestSection'},{title:'Niðurstöður',link:'#contestSection'}] },
-        { title:'Dómarar', link:'#judgesSection', subs:[{title:'Dómaralisti',link:'#judgesSection'},{title:'Dómaranámskeið',link:'#judgesSection'}] },
-        { title:'Landsliðið', link:'#teamSection', subs:[{title:'Landsliðsæfingar',link:'#teamSection'},{title:'Keppendur',link:'#teamSection'},{title:'Úrslit',link:'#teamSection'}] },
-        { title:'Þjálfun', link:'#trainingSection', subs:[{title:'Þjálfunarefni',link:'#trainingSection'},{title:'Námskeið',link:'#trainingSection'},{title:'Beltapróf',link:'#trainingSection'}] },
-        { title:'Myndbandasafn', link:'#videoSection', subs:[] }
+    "images": {
+        "logo": "",
+        "heroBg": ""
+    },
+    "hero": {
+        "badge": "IFMA aðildarsamband",
+        "title": "Velkomin á heimasíðu <span>MTSÍ</span>",
+        "text": "Muay Thai Samband Íslands vinnur að því að efla, skipuleggja og vernda muay thai íþróttina á Íslandi. Við tryggjum örugg keppnisskilyrði og styðjum okkar íþróttafólk á alþjóðavettvangi."
+    },
+    "nav": [
+        {
+            "title": "Um okkur",
+            "link": "#aboutSection",
+            "subs": [
+                {
+                    "title": "Um MTSÍ",
+                    "link": "#aboutSection"
+                },
+                {
+                    "title": "Stjórn",
+                    "link": "#boardSection"
+                },
+                {
+                    "title": "Saga muay thai",
+                    "link": "#historySection"
+                },
+                {
+                    "title": "Uppruni",
+                    "link": "#historySection"
+                }
+            ]
+        },
+        {
+            "title": "Félög & meðlimir",
+            "link": "#clubsSection",
+            "subs": [
+                {
+                    "title": "Aðildarfélög",
+                    "link": "#clubsSection"
+                },
+                {
+                    "title": "Skrá nýtt félag",
+                    "link": "#clubsSection"
+                },
+                {
+                    "title": "Meðlimaskrá",
+                    "link": "#clubsSection"
+                }
+            ]
+        },
+        {
+            "title": "Keppni",
+            "link": "#contestSection",
+            "subs": [
+                {
+                    "title": "Íslandsmót",
+                    "link": "#contestSection"
+                },
+                {
+                    "title": "Alþjóðakeppnir",
+                    "link": "#contestSection"
+                },
+                {
+                    "title": "Reglur",
+                    "link": "#contestSection"
+                },
+                {
+                    "title": "Niðurstöður",
+                    "link": "#contestSection"
+                }
+            ]
+        },
+        {
+            "title": "Dómarar",
+            "link": "#judgesSection",
+            "subs": [
+                {
+                    "title": "Dómaralisti",
+                    "link": "#judgesSection"
+                },
+                {
+                    "title": "Dómaranámskeið",
+                    "link": "#judgesSection"
+                }
+            ]
+        },
+        {
+            "title": "Landsliðið",
+            "link": "#teamSection",
+            "subs": [
+                {
+                    "title": "Landsliðsæfingar",
+                    "link": "#teamSection"
+                },
+                {
+                    "title": "Keppendur",
+                    "link": "#teamSection"
+                },
+                {
+                    "title": "Úrslit",
+                    "link": "#teamSection"
+                }
+            ]
+        },
+        {
+            "title": "Þjálfun",
+            "link": "#trainingSection",
+            "subs": [
+                {
+                    "title": "Þjálfunarefni",
+                    "link": "#trainingSection"
+                },
+                {
+                    "title": "Námskeið",
+                    "link": "#trainingSection"
+                },
+                {
+                    "title": "Beltapróf",
+                    "link": "#trainingSection"
+                }
+            ]
+        },
+        {
+            "title": "Myndbandasafn",
+            "link": "#videoSection",
+            "subs": []
+        }
     ],
-    news: [
-        { headline:'Íslandsmeistarar 2026!', body:'Til hamingju með frábæran árangur á Íslandsmóti í muay thai 2026! Sjá fulla niðurstöðulista hér að neðan og myndir frá keppninni.', date:'2026-03-22', author:'MTSÍ', image:'' },
-        { headline:'MTSÍ tekur afstöðu gegn óviðurkenndum keppnum', body:'Stjórn MTSÍ hvetur alla meðlimi til að taka ekki þátt í keppnum sem ekki hafa viðurkenningu sambandsins. Öryggi keppenda er í fyrirrúmi.', date:'2026-03-10', author:'MTSÍ', image:'' },
-        { headline:'Stjórnarfundur 4. mars 2026', body:'Fundargerð frá stjórnarfundi MTSÍ þann 4. mars 2026. Meðal annars var fjallað um keppnisdagatal og undirbúning næstu keppna.', date:'2026-03-04', author:'MTSÍ', image:'' },
-        { headline:'Námskeið: Muay Thai fyrir konur – Reykjavík', body:'MTSÍ býður til sérstaks muay thai námskeiðs fyrir konur. Námskeiðið er ókeypis og opið öllum aldurs- og reynsluhópum. Mætið fjölmennt!', date:'2026-02-20', author:'MTSÍ', image:'' },
-        { headline:'Skráning á Íslandsmót 2026 opin', body:'Skráning á Íslandsmót í muay thai 2026 er nú opin. Smelltu hér til að sjá skráningarlista og keppnisflokka.', date:'2026-02-15', author:'MTSÍ', image:'' }
+    "news": [
+        {
+            "headline": "Íslandsmeistarar 2026!",
+            "body": "",
+            "date": "2026-03-22",
+            "author": "MTSÍ",
+            "image": ""
+        },
+        {
+            "headline": "MTSÍ tekur afstöðu gegn óviðurkenndum keppnum",
+            "body": "",
+            "date": "2026-03-10",
+            "author": "MTSÍ",
+            "image": ""
+        },
+        {
+            "headline": "Stjórnarfundur 4. mars 2026",
+            "body": "Fundargerð frá stjórnarfundi MTSÍ þann 4. mars 2026. Meðal annars var fjallað um keppnisdagatal og undirbúning næstu keppna.",
+            "date": "2026-03-04",
+            "author": "MTSÍ",
+            "image": ""
+        },
+        {
+            "headline": "Námskeið: Muay Thai fyrir konur – Reykjavík",
+            "body": "\n",
+            "date": "2026-02-20",
+            "author": "MTSÍ",
+            "image": ""
+        },
+        {
+            "headline": "Skráning á Íslandsmót 2026 opin",
+            "body": "",
+            "date": "2026-02-15",
+            "author": "MTSÍ",
+            "image": ""
+        }
     ],
-    clubs: [
-        { name:'Imperium Fight Club', location:'Kópavogur', image:'' },
-        { name:'VBC Bardagaklúbbur', location:'Ísland', image:'' }
+    "clubs": [
+        {
+            "name": "Imperium Fight Club",
+            "location": "Kópavogur",
+            "image": ""
+        },
+        {
+            "name": "VBC Bardagaklúbbur",
+            "location": "Ísland",
+            "image": ""
+        }
     ],
-    clubsMeta: { title:'Aðildarfélög', subtitle:'Félög sem eru skráð hjá Muay Thai Sambandi Íslands' },
-    about: {
-        title:'Um MTSÍ',
-        subtitle:'Muay Thai Samband Íslands',
-        paragraphs: [
-            'Muay Thai Samband Íslands (MTSÍ) er landssamband muay thai íþróttarinnar á Íslandi. Sambandið er aðili að IFMA (International Federation of Muaythai Associations) sem samanstendur af yfir 130 aðildarlöndum um allan heim.',
-            'Hlutverk MTSÍ er að skipuleggja, efla og vernda muay thai íþróttina á Íslandi. Við vinnum að því að keppendur geti keppt við örugg og fagleg skilyrði, bæði innanlands og á alþjóðavettvangi.',
-            'MTSÍ starfar í nánu samstarfi við systursamtök á Norðurlöndunum, þar á meðal Svenska Muaythaiförbundet (SMTF) í Svíþjóð, og tekur virkan þátt í alþjóðlegu muay thai samstarfi.'
+    "clubsMeta": {
+        "title": "Aðildarfélög",
+        "subtitle": "Félög sem eru skráð hjá Muay Thai Sambandi Íslands"
+    },
+    "about": {
+        "title": "Um MTSÍ",
+        "subtitle": "Muay Thai Samband Íslands",
+        "paragraphs": [
+            "Muay Thai Samband Íslands (MTSÍ) er landssamband muay thai íþróttarinnar á Íslandi. Sambandið er aðili að IFMA (International Federation of Muaythai Associations) sem samanstendur af yfir 130 aðildarlöndum um allan heim.",
+            "Hlutverk MTSÍ er að skipuleggja, efla og vernda muay thai íþróttina á Íslandi. Við vinnum að því að keppendur geti keppt við örugg og fagleg skilyrði, bæði innanlands og á alþjóðavettvangi.",
+            "MTSÍ starfar í nánu samstarfi við systursamtök á Norðurlöndunum og tekur virkan þátt í alþjóðlegu muay thai samstarfi."
         ],
-        stats: [
-            { number:'2', label:'Aðildarfélög' },
-            { number:'130+', label:'IFMA lönd' },
-            { number:'1', label:'Íslandsmót á ári' },
-            { number:'🇮🇸', label:'Landsliðið' }
+        "stats": [
+            {
+                "number": "2",
+                "label": "Aðildarfélög"
+            },
+            {
+                "number": "130+",
+                "label": "IFMA lönd"
+            },
+            {
+                "number": "0",
+                "label": "Íslandsmót á ári"
+            },
+            {
+                "number": "🇮🇸",
+                "label": "Landsliðið"
+            }
         ]
     },
-    pages: {
-        contest: { title:'Keppni', subtitle:'Keppnir og viðburðir á vegum MTSÍ', body:'<p>MTSÍ skipuleggur Íslandsmót í muay thai árlega þar sem keppendur úr öllum aðildarfélögum landsins mætast. Keppnin eru haldin samkvæmt reglum IFMA og tryggja öryggi allra þátttakenda.</p><p>Auk Íslandsmóts taka keppendur okkar þátt í alþjóðlegum keppnum á vegum IFMA, þar á meðal Evrópumóti og Heimsmeistaramóti.</p>' },
-        judges: { title:'Dómarar', subtitle:'Dómarar og yfirdómarar MTSÍ', body:'<p>MTSÍ leggur áherslu á vel þjálfaða dómara sem tryggja réttlát og örugg keppnisskilyrði. Dómaranámskeið eru haldin reglulega í samstarfi við IFMA.</p>' },
-        team: { title:'Landsliðið', subtitle:'Landsliðið í muay thai', body:'<p>Landsliðið í muay thai eru úrvalskeppendur sem keppa fyrir Íslands hönd á alþjóðavettvangi. Landsliðið þjálfar saman undir handleiðslu reynds þjálfarateymis.</p>' },
-        training: { title:'Þjálfun', subtitle:'Þjálfunarefni, námskeið og beltapróf', body:'<p>MTSÍ býður upp á fjölbreytt þjálfunarefni og námskeið fyrir iðkendur á öllum stigum. Beltaprófakerfi MTSÍ fylgir stöðluðum kröfum IFMA.</p>' },
-        history: { title:'Saga Muay Thai', subtitle:'Uppruni og saga bardagalistarinnar', body:'<p>Muay Thai, einnig þekkt sem þaíboxning, á sér aldalanga sögu í Tælandi. Íþróttin hefur þróast úr fornum bardagalistum í háttsetta keppnisíþrótt sem er nú viðurkennd af alþjóðlegum íþróttasamtökum.</p><p>Á Íslandi hefur muay thai vaxið ört á síðustu árum og laðar að sér íþróttamenn af öllum aldri og kyni.</p>' },
-        board: { title:'Stjórn MTSÍ', subtitle:'Stjórnarmeðlimir og starfsfólk', body:'<p>Stjórn MTSÍ er kosin á aðalfundi og ber ábyrgð á daglegum rekstri og stefnumótun sambandsins. Stjórnin vinnur að því að efla muay thai á Íslandi og tryggja að sambandið uppfylli alþjóðlegar kröfur IFMA.</p>' },
-        video: { title:'Myndbandasafn', subtitle:'Myndböndin og hápunktar frá keppnum', body:'<p>Hér getur þú fundið myndböndin frá keppnum, námskeiðum og öðrum viðburðum á vegum MTSÍ. Nýtt efni bætist við reglulega.</p>' }
+    "pages": {
+        "contest": {
+            "title": "Keppni",
+            "subtitle": "Keppnir og viðburðir á vegum MTSÍ",
+            "body": "<p>MTSÍ skipuleggur Íslandsmót í muay thai árlega þar sem keppendur úr öllum aðildarfélögum landsins mætast. Keppnin eru haldin samkvæmt reglum IFMA og tryggja öryggi allra þátttakenda.</p><p>Auk Íslandsmóts taka keppendur okkar þátt í alþjóðlegum keppnum á vegum IFMA, þar á meðal Evrópumóti og Heimsmeistaramóti.</p>"
+        },
+        "judges": {
+            "title": "Dómarar",
+            "subtitle": "Dómarar og yfirdómarar MTSÍ",
+            "body": "<p>MTSÍ leggur áherslu á vel þjálfaða dómara sem tryggja réttlát og örugg keppnisskilyrði. Dómaranámskeið eru haldin reglulega í samstarfi við IFMA.</p>"
+        },
+        "team": {
+            "title": "Landsliðið",
+            "subtitle": "Landsliðið í muay thai",
+            "body": "<p>Landsliðið í muay thai eru úrvalskeppendur sem keppa fyrir Íslands hönd á alþjóðavettvangi. Landsliðið þjálfar saman undir handleiðslu reynds þjálfarateymis.</p>"
+        },
+        "training": {
+            "title": "Þjálfun",
+            "subtitle": "Þjálfunarefni, námskeið og beltapróf",
+            "body": "<p>MTSÍ býður upp á fjölbreytt þjálfunarefni og námskeið fyrir iðkendur á öllum stigum. Beltaprófakerfi MTSÍ fylgir stöðluðum kröfum IFMA.</p>"
+        },
+        "history": {
+            "title": "Saga Muay Thai",
+            "subtitle": "Uppruni og saga bardagalistarinnar",
+            "body": "<p>Muay Thai, einnig þekkt sem þaíboxning, á sér aldalanga sögu í Tælandi. Íþróttin hefur þróast úr fornum bardagalistum í háttsetta keppnisíþrótt sem er nú viðurkennd af alþjóðlegum íþróttasamtökum.</p><p>Á Íslandi hefur muay thai vaxið ört á síðustu árum og laðar að sér íþróttamenn af öllum aldri og kyni.</p>"
+        },
+        "board": {
+            "title": "Stjórn MTSÍ",
+            "subtitle": "Stjórnarmeðlimir og starfsfólk",
+            "body": "<p>Stjórn MTSÍ er kosin á aðalfundi og ber ábyrgð á daglegum rekstri og stefnumótun sambandsins. Stjórnin vinnur að því að efla muay thai á Íslandi og tryggja að sambandið uppfylli alþjóðlegar kröfur IFMA.</p>"
+        },
+        "video": {
+            "title": "Myndbandasafn",
+            "subtitle": "Myndböndin og hápunktar frá keppnum",
+            "body": "<p>Hér getur þú fundið myndböndin frá keppnum, námskeiðum og öðrum viðburðum á vegum MTSÍ. Nýtt efni bætist við reglulega.</p>"
+        }
     },
-    partners: [],
-    footer: {
-        col1: '<h4>MTSÍ</h4><p>Muay Thai Samband Íslands<br>Stofnað til að efla muay thai á Íslandi<br><br><a href="mailto:mtsi@muaythai.is">mtsi@muaythai.is</a></p>',
-        col2: '<h4>Flýtileiðir</h4><ul class="footer-links"><li><a href="#">Um MTSÍ</a></li><li><a href="#">Aðildarfélög</a></li><li><a href="#">Keppnisdagatal</a></li><li><a href="#">Landsliðið</a></li><li><a href="#">Hafa samband</a></li></ul>',
-        col3: '<h4>Fylgdu okkur</h4><p><a href="https://www.instagram.com/muaythai_iceland/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a><br><a href="#" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></p>',
-        bottom: '&copy; 2026 Muay Thai Samband Íslands (MTSÍ). Allur réttur áskilinn.'
-    }
+    "partners": [],
+    "footer": {
+        "col1": "<h4>MTSÍ</h4><p>Muay Thai Samband Íslands<br>Stofnað til að efla muay thai á Íslandi<br><br><a href=\"mailto:mtsi@muaythai.is\">mtsi@muaythai.is</a></p>",
+        "col2": "<h4>Flýtileiðir</h4><ul class=\"footer-links\"><li><a href=\"#\">Um MTSÍ</a></li><li><a href=\"#\">Aðildarfélög</a></li><li><a href=\"#\">Keppnisdagatal</a></li><li><a href=\"#\">Landsliðið</a></li><li><a href=\"#\">Hafa samband</a></li></ul>",
+        "col3": "<h4>Fylgdu okkur</h4><p><a href=\"https://www.instagram.com/muaythai_iceland/\" target=\"_blank\"><i class=\"fab fa-instagram\"></i> Instagram</a><br><a href=\"#\" target=\"_blank\"><i class=\"fab fa-facebook\"></i> Facebook</a></p>",
+        "bottom": "&copy; 2026 Muay Thai Samband Íslands (MTSÍ). Allur réttur áskilinn."
+    },
+    "_version": 4
 };
 /* DD_END */
 
