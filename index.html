@@ -1044,8 +1044,6 @@ function renderNav() {
 // PAGE ROUTING
 // ============================================================
 document.addEventListener('DOMContentLoaded',function(){
-  var isTouch = window.matchMedia('(hover:none)').matches || window.matchMedia('(pointer:coarse)').matches;
-  if (!isTouch) return;
   document.querySelectorAll('.nav-list > li').forEach(function(li){
     var dd = li.querySelector('.dropdown');
     if (!dd) return;
