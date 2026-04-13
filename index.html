@@ -618,6 +618,17 @@
                 <button class="admin-btn admin-btn-primary" onclick="changePassword()"><i class="fas fa-key"></i> Breyta lykilorði</button>
             </div>
             <hr style="border:none;border-top:1px solid #e0e0e0;margin:20px 0">
+            <h4 style="margin-bottom:12px;color:#003897"><i class="fas fa-globe"></i> Favicon (væfmerki)</h4>
+            <div class="admin-field">
+                <label>Hlaða upp favicon</label>
+                <div class="img-upload-area" id="faviconUploadArea" onclick="document.getElementById('faviconFile').click()" style="max-width:200px">
+                    <img id="faviconPreview" src="" alt="Favicon" style="max-height:64px;max-width:64px">
+                    <p style="margin-top:8px;color:#666;font-size:13px">Smelltu til að velja mynd</p>
+                </div>
+                <input type="file" id="faviconFile" accept="image/png,image/x-icon,image/svg+xml" style="display:none" onchange="handleFaviconUpload(event)">
+                <p style="margin-top:6px;color:#999;font-size:12px">Mælt með 32x32 eða 64x64 px mynd (PNG eða ICO)</p>
+            </div>
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:20px 0">
             <h4 style="margin-bottom:12px;color:#003897">Afritun gagna</h4>
             <p style="font-size:12px;color:#888;margin-bottom:12px">Fluttu gögn inn/út sem JSON skrá til öryggisafritunar.</p>
             <div class="btn-row">
@@ -920,6 +931,7 @@ let isAdmin = false;
 
 function renderAll() {
     renderLogo();
+    applyFavicon();
     renderHero();
     renderNav();
     renderNews();
@@ -1270,6 +1282,27 @@ function removeLogo() {
 }
 
 // Hero background upload
+function handleFaviconUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    readFileAsDataURL(file, 64, function(dataUrl) {
+        if (!siteData.images) siteData.images = { logo:'', heroBg:'' };
+        siteData.images.favicon = dataUrl;
+        updateImgPreview('favicon', dataUrl);
+        applyFavicon();
+        saveData();
+    });
+}
+
+function applyFavicon() {
+    var link = document.querySelector("link[rel*='icon']");
+    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+    if (siteData.images && siteData.images.favicon) {
+        link.href = siteData.images.favicon;
+    }
+    var prev = document.getElementById('faviconPreview');
+    if (prev && siteData.images && siteData.images.favicon) { prev.src = siteData.images.favicon; }
+}
+
 function handleHeroBgUpload(event) {
     const file = event.target.files[0]; if (!file) return;
     readFileAsDataURL(file, 1600, function(dataUrl) {
