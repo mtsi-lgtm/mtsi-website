@@ -898,79 +898,16 @@
 // Load or init — version check forces update when structure changes
 const DATA_VERSION = 4;
 function loadData() {
-    try {
-        const saved = localStorage.getItem('mtsi_site_data');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            // If old version or missing fields, merge with defaults
-            if (!parsed._version || parsed._version < DATA_VERSION) {
-                const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
-                // Keep user-edited content but update structure
-                fresh.news = parsed.news || fresh.news;
-                fresh.clubs = parsed.clubs || fresh.clubs;
-                fresh.about = parsed.about || fresh.about;
-                fresh.footer = parsed.footer || fresh.footer;
-                // Partners reset to defaults in v4 (removed ÍSÍ and SMTF)
-                if (parsed.credentials && parsed.credentials.pass !== 'mtsi2026') {
-                    fresh.credentials = parsed.credentials;
-                }
-                if (parsed.images) fresh.images = parsed.images;
-                fresh._version = DATA_VERSION;
-                localStorage.setItem('mtsi_site_data', JSON.stringify(fresh));
-                return fresh;
-            }
-            return parsed;
-        }
-    } catch(e) {}
+    // Always use DEFAULT_DATA as the source of truth.
+    // When admin saves changes, pushToGitHub() updates DEFAULT_DATA in the repo,
+    // so all browsers/devices get the latest data on next page load.
     const d = JSON.parse(JSON.stringify(DEFAULT_DATA));
     d._version = DATA_VERSION;
     return d;
 }
 
-    /* --- GitHub Sync --- */
-    async function pushToGitHub() {
-      try {
-        const fnUrl = '/.netlify/functions/github-sync';
-        const getRes = await fetch(fnUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get' })
-        });
-        if (!getRes.ok) throw new Error('GitHub GET failed: ' + getRes.status);
-        const fileData = await getRes.json();
-        const rawBytes = Uint8Array.from(atob(fileData.content.replace(/\n/g, '')), c => c.charCodeAt(0));
-        let fileText = new TextDecoder('utf-8').decode(rawBytes);
-        const startMarker = '/* DD_START */';
-        const endMarker = '/* DD_END */';
-        const si = fileText.indexOf(startMarker);
-        const ei = fileText.indexOf(endMarker);
-        if (si === -1 || ei === -1) throw new Error('Markers not found');
-        const before = fileText.substring(0, si + startMarker.length);
-        const after = fileText.substring(ei);
-        const newDefault = '\n    const DEFAULT_DATA = ' + JSON.stringify(siteData, null, 4) + ';\n    ';
-        const newHtml = before + newDefault + after;
-        const encoder = new TextEncoder();
-        const bytes = encoder.encode(newHtml);
-        let binary = '';
-        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-        const b64 = btoa(binary);
-        const putRes = await fetch(fnUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'put', content: b64, sha: fileData.sha, message: 'Update site via admin' })
-        });
-        if (!putRes.ok) throw new Error('GitHub PUT failed: ' + putRes.status);
-        alert('Published successfully!');
-      } catch (e) {
-        alert('Publish failed: ' + e.message);
-      }
-    }
-
-
-
-
-    function saveData() {
-      window['local'+'Storage']['set'+'Item']('mtsi_site_data', JSON.stringify(siteData));
+function saveData() {
+      // Persist changes by pushing to GitHub (updates DEFAULT_DATA in repo)
       pushToGitHub();
     }
 
