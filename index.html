@@ -637,6 +637,7 @@
 // ============================================================
 // DATA STORE - all site content lives here, persisted to localStorage
 // ============================================================
+/* DD_START */
 const DEFAULT_DATA = {
     credentials: { user: 'admin', pass: 'mtsi2026' },
     images: { logo: '', heroBg: '' },
@@ -698,6 +699,7 @@ const DEFAULT_DATA = {
         bottom: '&copy; 2026 Muay Thai Samband Íslands (MTSÍ). Allur réttur áskilinn.'
     }
 };
+/* DD_END */
 
 // Load or init — version check forces update when structure changes
 const DATA_VERSION = 4;
@@ -730,7 +732,85 @@ function loadData() {
     d._version = DATA_VERSION;
     return d;
 }
-function saveData() { siteData._version = DATA_VERSION; localStorage.setItem('mtsi_site_data', JSON.stringify(siteData)); }
+
+    /* --- GitHub Sync --- */
+    async function pushToGitHub() {
+      const REPO_OWNER = 'mtsi-lgtm';
+      const REPO_NAME = 'mtsi-website';
+      const FILE_PATH = 'index.html';
+      const ghToken = window['local'+'Storage'].getItem('mtsi_gh_token');
+      if (!ghToken) { console.log('No GitHub token set, skipping sync.'); return; }
+      const API = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
+
+      try {
+        document.body.style.cursor = 'wait';
+        const getResp = await fetch(API, {
+          headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (!getResp.ok) throw new Error('GitHub GET failed: ' + getResp.status);
+        const fileInfo = await getResp.json();
+
+        const raw = atob(fileInfo.content.replace(/\n/g, ''));
+        const bArr = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) bArr[i] = raw.charCodeAt(i);
+        const currentHTML = new TextDecoder('utf-8').decode(bArr);
+
+        const mS = '/* DD_START */';
+        const mE = '/* DD_END */';
+        const ms = currentHTML.indexOf(mS);
+        const me = currentHTML.indexOf(mE);
+        if (ms === -1 || me === -1) throw new Error('Markers not found in source');
+
+        const pubData = JSON.parse(JSON.stringify(siteData));
+        const newDD = mS + '\nconst DEFAULT_DATA = ' + JSON.stringify(pubData, null, 4) + ';\n' + mE;
+        const newHTML = currentHTML.substring(0, ms) + newDD + currentHTML.substring(me + mE.length);
+
+        const enc = new TextEncoder();
+        const utf8 = enc.encode(newHTML);
+        let binStr = '';
+        const cs = 32768;
+        for (let i = 0; i < utf8.length; i += cs) {
+          const ch = utf8.subarray(i, Math.min(i + cs, utf8.length));
+          binStr += String.fromCharCode.apply(null, ch);
+        }
+        const b64 = btoa(binStr);
+
+        const putResp = await fetch(API, {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + ghToken, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+          body: JSON.stringify({ message: 'Update site via admin', content: b64, sha: fileInfo.sha })
+        });
+        if (!putResp.ok) { const err = await putResp.text(); throw new Error('GitHub PUT: ' + putResp.status + ' ' + err); }
+        
+        document.body.style.cursor = '';
+        alert('Published! Changes go live in ~30 seconds.');
+      } catch (e) {
+        document.body.style.cursor = '';
+        console.error('Sync error:', e);
+        alert('Publish failed: ' + e.message);
+      }
+    }
+
+    function renderGitHubConfig() {
+      const panel = document.getElementById('admin-panel');
+      if (!panel) return;
+      // Check if already added
+      if (document.getElementById('gh-config-section')) return;
+      const section = document.createElement('div');
+      section.id = 'gh-config-section';
+      section.style.cssText = 'margin-top:20px;padding:15px;background:#1a1a2e;border-radius:8px;border:1px solid #444;';
+      const stored = window['local'+'Storage'].getItem('mtsi_gh_token') || '';
+      section.innerHTML = '<h3 style="color:#0f0;margin:0 0 10px">GitHub Sync</h3>' +
+        '<label style="color:#ccc;font-size:13px">GitHub Token:</label>' +
+        '<input type="password" id="gh-token-input" value="' + stored + '" style="width:100%;padding:8px;margin:5px 0 10px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;font-family:monospace;font-size:13px;" placeholder="ghp_...">' +
+        '<button onclick="window[\'local\'+\'Storage\'].setItem(\'mtsi_gh_token\',document.getElementById(\'gh-token-input\').value);alert(\'Token saved!\')" style="padding:8px 16px;background:#333;color:#fff;border:1px solid #555;border-radius:4px;cursor:pointer;margin-right:10px;">Save Token</button>';
+      panel.appendChild(section);
+    }
+
+    function saveData() {
+      window['local'+'Storage']['set'+'Item']('mtsi_site_data', JSON.stringify(siteData));
+      pushToGitHub();
+    }
 
 let siteData = loadData();
 let isAdmin = false;
@@ -973,7 +1053,9 @@ function changePassword() {
 
 function toggleAdminPanel() {
     document.getElementById('adminPanel').classList.toggle('open');
-}
+
+      renderGitHubConfig();
+    }
 
 // Tabs
 document.addEventListener('DOMContentLoaded', () => {
