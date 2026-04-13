@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTSÍ - Muay Thai Samband Íslands</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; scroll-padding-top:60px; }
+        body { font-family:'Roboto',sans-serif; color:#333; background:#f0f2f5; }
+
+        /* ===== HEADER ===== */
+        .top-header { background:#fff; padding:18px 40px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #003897; position:relative; }
+        .logo-area { display:flex; align-items:center; gap:18px; }
+        .logo-emblem { width:95px; height:95px; flex-shrink:0; }
+        .logo-text { display:flex; flex-direction:column; }
+        .logo-text .org-name { font-size:13px; font-weight:500; color:#003897; letter-spacing:1.5px; text-transform:uppercase; }
+        .logo-text .org-full { font-size:10px; color:#666; letter-spacing:.5px; margin-top:2px; }
+        .header-actions { display:flex; gap:32px; align-items:center; }
+        .header-action { display:flex; align-items:center; gap:12px; text-decoration:none; color:#333; cursor:pointer; transition:color .2s; }
+        .header-action:hover { color:#003897; }
+        .header-action .icon-circle { width:48px; height:48px; border-radius:50%; border:2px solid #d4a017; display:flex; align-items:center; justify-content:center; color:#d4a017; font-size:20px; transition:all .2s; }
+        .header-action:hover .icon-circle { background:#d4a017; color:#fff; }
+        .header-action-text strong { display:block; font-size:13px; font-weight:700; color:#003897; }
+        .header-action-text span { font-size:11px; color:#888; }
+
+        /* Login button in header */
+        .admin-login-btn { background:none; border:1px solid #ccc; border-radius:4px; padding:6px 14px; font-size:12px; color:#888; cursor:pointer; transition:all .2s; margin-left:20px; }
+        .admin-login-btn:hover { border-color:#003897; color:#003897; }
+        .admin-login-btn.logged-in { border-color:#d4a017; color:#d4a017; }
+
+        /* ===== NAVIGATION ===== */
+        .main-nav { background:linear-gradient(135deg,#003897 0%,#00245e 100%); padding:0 40px; position:sticky; top:0; z-index:1000; box-shadow:0 2px 12px rgba(0,0,0,.15); }
+        .nav-list { list-style:none; display:flex; align-items:center; }
+        .nav-list>li { position:relative; }
+        .nav-list>li>a { display:flex; align-items:center; gap:6px; padding:16px 22px; color:#fff; text-decoration:none; font-size:13px; font-weight:500; letter-spacing:.8px; text-transform:uppercase; transition:background .2s; }
+        .nav-list>li>a:hover { background:rgba(255,255,255,.1); }
+        .nav-list>li>a .fa-chevron-down { font-size:9px; opacity:.7; }
+        .nav-search { margin-left:auto; padding:16px 10px; color:#fff; font-size:18px; cursor:pointer; }
+        .dropdown { display:none; position:absolute; top:100%; left:0; background:#fff; min-width:220px; box-shadow:0 4px 20px rgba(0,0,0,.15); border-top:3px solid #d4a017; z-index:2000; }
+        .nav-list>li:hover .dropdown { display:block; }
+        .dropdown a { display:block; padding:12px 20px; color:#333; text-decoration:none; font-size:13px; transition:all .15s; border-bottom:1px solid #f0f0f0; }
+        .dropdown a:hover { background:#003897; color:#fff; }
+
+        /* ===== HERO ===== */
+        .hero { background:linear-gradient(135deg,#003897 0%,#001d4a 60%,#0d0d0d 100%); padding:60px 40px; position:relative; overflow:hidden; }
+        .hero::before { content:''; position:absolute; top:-50%; right:-10%; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(212,160,23,.15) 0%,transparent 70%); }
+        .hero::after { content:''; position:absolute; bottom:-30%; left:5%; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle,rgba(220,50,50,.1) 0%,transparent 70%); }
+        .hero-content { max-width:800px; position:relative; z-index:1; }
+        .hero h1 { font-size:42px; font-weight:900; color:#fff; line-height:1.2; margin-bottom:16px; }
+        .hero h1 span { color:#d4a017; }
+        .hero p { font-size:17px; color:rgba(255,255,255,.8); line-height:1.7; max-width:600px; }
+        .hero-badge { display:inline-block; background:rgba(212,160,23,.2); border:1px solid rgba(212,160,23,.4); color:#d4a017; padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:20px; }
+        .hero-graphic { position:absolute; right:60px; top:50%; transform:translateY(-50%); opacity:.12; z-index:0; }
+        .hero-graphic svg { width:320px; height:320px; }
+
+        /* ===== NEWS ===== */
+        .content-section { max-width:1200px; margin:0 auto; padding:50px 40px; }
+        .section-title { font-size:26px; font-weight:700; color:#003897; margin-bottom:8px; }
+        .section-subtitle { font-size:14px; color:#888; margin-bottom:36px; }
+        .news-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:30px; }
+        .news-card { background:#fff; border-radius:6px; box-shadow:0 1px 8px rgba(0,0,0,.06); padding:30px 28px; display:flex; flex-direction:column; transition:box-shadow .25s,transform .25s; border-left:4px solid transparent; position:relative; }
+        .news-card:hover { box-shadow:0 6px 24px rgba(0,0,0,.1); transform:translateY(-2px); border-left-color:#d4a017; }
+        .news-card h3 { font-size:18px; font-weight:700; color:#1a1a1a; margin-bottom:12px; line-height:1.4; }
+        .news-card h3 a { color:inherit; text-decoration:none; }
+        .news-card h3 a:hover { color:#003897; }
+        .news-card p { font-size:13.5px; color:#666; line-height:1.65; flex:1; margin-bottom:16px; }
+        .read-more { font-size:12px; font-weight:700; color:#003897; text-decoration:none; text-transform:uppercase; letter-spacing:.5px; display:inline-flex; align-items:center; gap:6px; margin-bottom:18px; transition:color .2s; }
+        .read-more:hover { color:#d4a017; }
+        .news-meta { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; border-top:1px solid #f0f0f0; padding-top:14px; }
+        .load-more { text-align:center; margin-top:10px; }
+        .load-more a { color:#003897; font-size:14px; text-decoration:none; padding-bottom:3px; border-bottom:1px solid #003897; transition:color .2s,border-color .2s; }
+        .load-more a:hover { color:#d4a017; border-color:#d4a017; }
+
+        /* ===== CLUBS ===== */
+        .clubs-section { background:#fff; padding:50px 40px; }
+        .clubs-inner { max-width:1200px; margin:0 auto; }
+        .clubs-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+        .club-card { display:flex; align-items:center; gap:20px; background:#f8f9fb; padding:24px 28px; border-radius:8px; border:1px solid #e8eaef; transition:all .25s; position:relative; }
+        .club-card:hover { border-color:#003897; box-shadow:0 4px 16px rgba(0,56,151,.08); }
+        .club-icon { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#003897,#00245e); display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; flex-shrink:0; }
+        .club-info h4 { font-size:16px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+        .club-info span { font-size:13px; color:#888; }
+
+        /* ===== ABOUT ===== */
+        .about-section { max-width:1200px; margin:0 auto; padding:50px 40px; }
+        .about-grid { display:grid; grid-template-columns:2fr 1fr; gap:40px; align-items:start; }
+        .about-text p { font-size:15px; color:#555; line-height:1.8; margin-bottom:16px; }
+        .about-stats { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .stat-box { background:#fff; border-radius:8px; padding:24px; text-align:center; box-shadow:0 1px 8px rgba(0,0,0,.06); border-top:3px solid #d4a017; }
+        .stat-box .number { font-size:32px; font-weight:900; color:#003897; }
+        .stat-box .label { font-size:12px; color:#888; text-transform:uppercase; letter-spacing:.5px; margin-top:4px; }
+
+        /* ===== PARTNERS & FOOTER ===== */
+        .footer { background:linear-gradient(135deg,#00245e 0%,#001233 100%); padding:40px 40px 24px; color:rgba(255,255,255,.7); }
+        .footer-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; }
+        .footer h4 { color:#fff; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+        .footer p,.footer a { font-size:13px; line-height:1.8; color:rgba(255,255,255,.6); text-decoration:none; }
+        .footer a:hover { color:#d4a017; }
+        .footer-links { list-style:none; }
+        .footer-links li a { display:block; padding:3px 0; }
+        .footer-bottom { max-width:1200px; margin:30px auto 0; padding-top:20px; border-top:1px solid rgba(255,255,255,.1); text-align:center; font-size:12px; color:rgba(255,255,255,.35); }
+
+        /* Cookie */
+        .cookie-bar { position:fixed; bottom:0; left:0; right:0; background:#003897; color:#fff; font-size:13px; padding:14px 40px; display:flex; align-items:center; justify-content:center; gap:16px; z-index:9999; }
+        .cookie-bar a { color:#d4a017; text-decoration:underline; cursor:pointer; font-weight:600; }
+        .cookie-bar.hidden { display:none; }
+
+        /* ============================================================ */
+        /* ADMIN CMS STYLES */
+        /* ============================================================ */
+
+        /* Login Modal */
+        .modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.55); z-index:10000; align-items:center; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-box { background:#fff; border-radius:12px; padding:40px; width:380px; max-width:90vw; box-shadow:0 20px 60px rgba(0,0,0,.3); text-align:center; }
+        .modal-box h2 { font-size:20px; color:#003897; margin-bottom:6px; }
+        .modal-box p { font-size:13px; color:#888; margin-bottom:24px; }
+        .modal-box input { width:100%; padding:12px 16px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; outline:none; transition:border-color .2s; margin-bottom:12px; }
+        .modal-box input:focus { border-color:#003897; }
+        .modal-box .login-btn { width:100%; padding:12px; background:#003897; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:background .2s; }
+        .modal-box .login-btn:hover { background:#00245e; }
+        .modal-box .login-error { color:#dc3232; font-size:12px; margin-top:8px; display:none; }
+        .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:24px; color:#999; cursor:pointer; }
+
+        /* Admin toolbar (floating) */
+        .admin-toolbar { display:none; position:fixed; top:80px; right:20px; z-index:9000; }
+        .admin-toolbar.active { display:block; }
+        .admin-fab { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#d4a017,#b8860b); color:#fff; border:none; font-size:20px; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,.25); transition:transform .2s; }
+        .admin-fab:hover { transform:scale(1.1); }
+
+        /* Admin Panel (slide-in) */
+        .admin-panel { position:fixed; top:0; right:-480px; width:460px; height:100vh; background:#fff; box-shadow:-4px 0 30px rgba(0,0,0,.15); z-index:10001; transition:right .35s ease; overflow-y:auto; }
+        .admin-panel.open { right:0; }
+        .admin-panel-header { background:linear-gradient(135deg,#003897,#00245e); padding:24px; color:#fff; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:2; }
+        .admin-panel-header h3 { font-size:16px; font-weight:700; }
+        .admin-panel-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; opacity:.7; }
+        .admin-panel-close:hover { opacity:1; }
+        .admin-panel-body { padding:20px; }
+
+        /* Admin tabs */
+        .admin-tabs { display:flex; gap:0; border-bottom:2px solid #e0e0e0; margin-bottom:20px; overflow-x:auto; }
+        .admin-tab { padding:10px 16px; font-size:12px; font-weight:600; color:#888; background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; transition:all .2s; }
+        .admin-tab:hover { color:#003897; }
+        .admin-tab.active { color:#003897; border-bottom-color:#003897; }
+        .admin-tab-content { display:none; }
+        .admin-tab-content.active { display:block; }
+
+        /* Form elements */
+        .admin-field { margin-bottom:18px; }
+        .admin-field label { display:block; font-size:11px; font-weight:700; color:#666; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+        .admin-field input, .admin-field textarea, .admin-field select { width:100%; padding:10px 14px; border:1.5px solid #e0e0e0; border-radius:6px; font-size:13px; font-family:'Roboto',sans-serif; outline:none; transition:border-color .2s; }
+        .admin-field input:focus, .admin-field textarea:focus { border-color:#003897; }
+        .admin-field textarea { min-height:80px; resize:vertical; }
+        .admin-btn { padding:10px 20px; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; }
+        .admin-btn-primary { background:#003897; color:#fff; }
+        .admin-btn-primary:hover { background:#00245e; }
+        .admin-btn-danger { background:#dc3232; color:#fff; }
+        .admin-btn-danger:hover { background:#b22222; }
+        .admin-btn-secondary { background:#f0f0f0; color:#333; }
+        .admin-btn-secondary:hover { background:#e0e0e0; }
+        .admin-btn-gold { background:#d4a017; color:#fff; }
+        .admin-btn-gold:hover { background:#b8860b; }
+        .btn-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+
+        /* Item list in admin */
+        .admin-item { background:#f8f9fb; border:1px solid #e8eaef; border-radius:8px; padding:16px; margin-bottom:12px; position:relative; }
+        .admin-item h4 { font-size:14px; font-weight:700; color:#1a1a1a; margin-bottom:4px; }
+        .admin-item p { font-size:12px; color:#888; }
+        .admin-item-actions { display:flex; gap:6px; margin-top:10px; }
+        .admin-item .badge { display:inline-block; background:#003897; color:#fff; font-size:10px; padding:2px 8px; border-radius:10px; margin-right:6px; }
+
+        /* Editable highlights */
+        .editable-highlight { outline:2px dashed #d4a017 !important; outline-offset:4px; cursor:pointer; position:relative; }
+        .editable-highlight::after { content:'✎'; position:absolute; top:-10px; right:-10px; background:#d4a017; color:#fff; width:22px; height:22px; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; }
+
+        /* Toast notification */
+        .toast { position:fixed; bottom:80px; right:20px; background:#1a1a1a; color:#fff; padding:14px 24px; border-radius:8px; font-size:13px; z-index:99999; transform:translateY(20px); opacity:0; transition:all .3s; pointer-events:none; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.success { border-left:4px solid #4caf50; }
+        .toast.error { border-left:4px solid #dc3232; }
+
+        /* Page routing */
+        .page-view { display:none; }
+        .page-view.active { display:block; }
+        .back-link { display:inline-flex; align-items:center; gap:8px; color:#003897; text-decoration:none; font-size:13px; font-weight:600; margin-bottom:24px; padding:8px 16px; background:#f0f4ff; border-radius:6px; transition:all .2s; }
+        .back-link:hover { background:#003897; color:#fff; }
+
+        /* Image upload areas */
+        .img-upload-area { border:2px dashed #d0d0d0; border-radius:8px; padding:20px; text-align:center; cursor:pointer; transition:all .2s; background:#fafafa; margin-bottom:8px; position:relative; }
+        .img-upload-area:hover { border-color:#003897; background:#f0f4ff; }
+        .img-upload-area.has-image { border-style:solid; border-color:#4caf50; padding:8px; }
+        .img-upload-area img { max-width:100%; max-height:150px; border-radius:4px; display:block; margin:0 auto; }
+        .img-upload-area .upload-placeholder { color:#999; font-size:12px; }
+        .img-upload-area .upload-placeholder i { font-size:28px; display:block; margin-bottom:8px; color:#ccc; }
+        .img-remove-btn { position:absolute; top:4px; right:4px; background:#dc3232; color:#fff; border:none; border-radius:50%; width:24px; height:24px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
+        .news-card-img { width:100%; height:160px; object-fit:cover; border-radius:4px; margin-bottom:14px; }
+        .club-card-logo { width:56px; height:56px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+        .custom-logo { width:95px; height:95px; border-radius:50%; object-fit:contain; flex-shrink:0; border:2px solid #003897; }
+        .hero-bg-image { background-size:cover; background-position:center; }
+        .hero-bg-image::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,20,60,.7); z-index:0; }
+
+        /* Responsive */
+        @media(max-width:900px){
+            .news-grid{grid-template-columns:1fr}.clubs-grid{grid-template-columns:1fr}.about-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}.header-actions{display:none}.hero h1{font-size:28px}.hero-graphic{display:none}.admin-panel{width:100%}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-box" style="position:relative">
+        <button class="modal-close" onclick="closeLogin()">&times;</button>
+        <h2><i class="fas fa-shield-alt" style="color:#d4a017"></i> Stjórnborð</h2>
+        <p>Innskráning fyrir stjórnendur MTSÍ</p>
+        <input type="text" id="loginUser" placeholder="Notandanafn">
+        <input type="password" id="loginPass" placeholder="Lykilorð" onkeydown="if(event.key==='Enter')attemptLogin()">
+        <button class="login-btn" onclick="attemptLogin()">Innskrá</button>
+        <div class="login-error" id="loginError">Rangt notandanafn eða lykilorð</div>
+        <p style="margin-top:16px;font-size:11px;color:#bbb;">Sjálfgefið: admin / mtsi2026</p>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== TOP HEADER ===== -->
+<header class="top-header">
+    <div class="logo-area">
+        <div id="logoContainer">
+            <div class="logo-emblem" id="defaultLogo" style="width:95px;height:95px;border-radius:50%;border:3px solid #003897;background:#f8f9fb;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:11px;text-align:center">
+                <span style="opacity:.5">Logo</span>
+            </div>
+            <img id="customLogo" class="custom-logo" style="display:none" alt="MTSÍ Logo">
+        </div>
+        <div class="logo-text">
+            <span class="org-name" id="siteOrgName">Muay Thai Samband Íslands</span>
+            <span class="org-full" id="siteOrgTagline">Stofnað til að efla og vernda muay thai íþróttina á Íslandi</span>
+        </div>
+    </div>
+    <div class="header-actions">
+        <a class="header-action" href="#">
+            <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
+            <div class="header-action-text"><strong>Keppnisdagatal</strong><span>Fylgstu með viðburðum<br>og keppnum</span></div>
+        </a>
+        <a class="header-action" href="#">
+            <div class="icon-circle"><i class="fas fa-plus-circle"></i></div>
+            <div class="header-action-text"><strong>Skrá viðburð</strong><span>Bættu keppni eða<br>námskeiði við</span></div>
+        </a>
+        <button class="admin-login-btn" id="adminLoginBtn" onclick="openLogin()">
+            <i class="fas fa-lock"></i> Stjórnandi
+        </button>
+    </div>
+</header>
+
+<!-- ===== NAV ===== -->
+<nav class="main-nav" id="mainNav">
+    <ul class="nav-list" id="navList">
+        <!-- Built by JS from data -->
+    </ul>
+</nav>
+
+<!-- ===== PAGE: HOME (frontpage sections) ===== -->
+<div data-page="home" class="page-view active">
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="heroSection">
+    <div class="hero-content">
+        <div class="hero-badge" id="heroBadge">IFMA aðildarsamband</div>
+        <h1 id="heroTitle">Velkomin á heimasíðu <span>MTSÍ</span></h1>
+        <p id="heroText">Muay Thai Samband Íslands vinnur að því að efla, skipuleggja og vernda muay thai íþróttina á Íslandi. Við tryggjum örugg keppnisskilyrði og styðjum íþróttamenn okkar á alþjóðavettvangi.</p>
+    </div>
+</section>
+
+<!-- ===== NEWS ===== -->
+<section class="content-section" id="newsSection">
+    <h2 class="section-title" id="newsTitle">Fréttir</h2>
+    <p class="section-subtitle" id="newsSubtitle">Nýjustu fréttir frá Muay Thai Sambandi Íslands</p>
+    <div class="news-grid" id="newsGrid">
+        <!-- Built by JS -->
+    </div>
+    <div class="load-more"><a href="#">Sækja fleiri fréttir</a></div>
+</section>
+
+<!-- ===== CLUBS ===== -->
+<section class="clubs-section" id="clubsSection">
+    <div class="clubs-inner">
+        <h2 class="section-title" id="clubsTitle">Aðildarfélög</h2>
+        <p class="section-subtitle" id="clubsSubtitle">Félög sem eru skráð hjá Muay Thai Sambandi Íslands</p>
+        <div class="clubs-grid" id="clubsGrid">
+            <!-- Built by JS -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about-section" id="aboutSection">
+    <h2 class="section-title" id="aboutTitle">Um MTSÍ</h2>
+    <p class="section-subtitle" id="aboutSubtitle">Muay Thai Samband Íslands</p>
+    <div class="about-grid">
+        <div class="about-text" id="aboutText">
+            <!-- Built by JS -->
+        </div>
+        <div class="about-stats" id="aboutStats">
+            <!-- Built by JS -->
+        </div>
+    </div>
+</section>
+
+</div><!-- end page: home -->
+
+<!-- ===== PAGE: ABOUT ===== -->
+<div data-page="aboutSection" class="page-view">
+<section class="content-section" style="background:#fff;min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="aboutPageTitle">Um MTSÍ</h2>
+        <p class="section-subtitle" id="aboutPageSubtitle">Muay Thai Samband Íslands</p>
+        <div id="aboutPageText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: CLUBS ===== -->
+<div data-page="clubsSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="clubsPageTitle">Aðildarfélög</h2>
+        <p class="section-subtitle" id="clubsPageSubtitle">Félög sem eru skráð hjá Muay Thai Sambandi Íslands</p>
+        <div class="clubs-grid" id="clubsPageGrid"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: CONTEST ===== -->
+<div data-page="contestSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="contestTitle">Keppni</h2>
+        <p class="section-subtitle" id="contestSubtitle">Keppnir og viðburðir á vegum MTSÍ</p>
+        <div id="contestText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: JUDGES ===== -->
+<div data-page="judgesSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="judgesTitle">Dómarar</h2>
+        <p class="section-subtitle" id="judgesSubtitle">Dómarar og yfirdómarar MTSÍ</p>
+        <div id="judgesText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: NATIONAL TEAM ===== -->
+<div data-page="teamSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="teamTitle">Landsliðið</h2>
+        <p class="section-subtitle" id="teamSubtitle">Landsliðið í muay thai</p>
+        <div id="teamText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: TRAINING ===== -->
+<div data-page="trainingSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="trainingTitle">Þjálfun</h2>
+        <p class="section-subtitle" id="trainingSubtitle">Þjálfunarefni, námskeið og beltapróf</p>
+        <div id="trainingText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: HISTORY ===== -->
+<div data-page="historySection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="historyTitle">Saga Muay Thai</h2>
+        <p class="section-subtitle" id="historySubtitle">Uppruni og saga bardagalistarinnar</p>
+        <div id="historyText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: BOARD ===== -->
+<div data-page="boardSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="boardTitle">Stjórn MTSÍ</h2>
+        <p class="section-subtitle" id="boardSubtitle">Stjórnarmeðlimir og starfsfólk</p>
+        <div id="boardText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: VIDEO ===== -->
+<div data-page="videoSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:1200px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title" id="videoTitle">Myndbandasafn</h2>
+        <p class="section-subtitle" id="videoSubtitle">Myndböndin og hápunktar frá keppnum</p>
+        <div id="videoText" style="font-size:15px;color:#555;line-height:1.8"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" id="footerSection">
+    <div class="footer-inner" id="footerGrid">
+        <!-- Built by JS -->
+    </div>
+    <div class="footer-bottom" id="footerBottom">&copy; 2026 Muay Thai Samband Íslands (MTSÍ). Allur réttur áskilinn.</div>
+</footer>
+
+<!-- ===== COOKIE BAR ===== -->
+<div class="cookie-bar" id="cookieBar">
+    Við notum vefkökur til að tryggja bestu upplifun á vefsíðunni. Ef þú heldur áfram að nota síðuna gerum við ráð fyrir að þú samþykkir það.
+    <a onclick="document.getElementById('cookieBar').classList.add('hidden')">Samþykkja</a>
+</div>
+
+<!-- ===== ADMIN FAB ===== -->
+<div class="admin-toolbar" id="adminToolbar">
+    <button class="admin-fab" onclick="toggleAdminPanel()" title="Opna stjórnborð"><i class="fas fa-cog"></i></button>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-panel-header">
+        <h3><i class="fas fa-tools"></i> Stjórnborð MTSÍ</h3>
+        <button class="admin-panel-close" onclick="toggleAdminPanel()">&times;</button>
+    </div>
+    <div class="admin-panel-body">
+        <div class="admin-tabs" id="adminTabs">
+            <button class="admin-tab active" data-tab="tab-hero">Forsíða</button>
+            <button class="admin-tab" data-tab="tab-news">Fréttir</button>
+            <button class="admin-tab" data-tab="tab-clubs">Félög</button>
+            <button class="admin-tab" data-tab="tab-about">Um okkur</button>
+            <button class="admin-tab" data-tab="tab-nav">Valmynd</button>
+
+            <button class="admin-tab" data-tab="tab-footer">Fótur</button>
+            <button class="admin-tab" data-tab="tab-pages">Síður</button>
+            <button class="admin-tab" data-tab="tab-settings">Stillingar</button>
+        </div>
+
+        <!-- TAB: Hero -->
+        <div class="admin-tab-content active" id="tab-hero">
+            <h4 style="color:#003897;margin-bottom:12px"><i class="fas fa-image"></i> Merki (Logo)</h4>
+            <div class="admin-field">
+                <label>Hlaða upp merki / logo</label>
+                <div class="img-upload-area" id="logoUploadArea" onclick="document.getElementById('logoFileInput').click()">
+                    <div class="upload-placeholder" id="logoPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Smelltu til að velja mynd<br><small>PNG, JPG, SVG — mælt með gagnsæjum bakgrunni</small></div>
+                    <img id="logoPreview" style="display:none;max-height:80px">
+                    <button class="img-remove-btn" id="logoRemoveBtn" style="display:none" onclick="event.stopPropagation();removeLogo()"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+            </div>
+
+            <hr style="border:none;border-top:1px solid #e8e8e8;margin:20px 0">
+            <h4 style="color:#003897;margin-bottom:12px"><i class="fas fa-panorama"></i> Forsíðuborði (Hero Banner)</h4>
+            <div class="admin-field">
+                <label>Bakgrunnsmynd forsíðuborða</label>
+                <div class="img-upload-area" id="heroBgUploadArea" onclick="document.getElementById('heroBgFileInput').click()">
+                    <div class="upload-placeholder" id="heroBgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Smelltu til að velja bakgrunnsmynd<br><small>Breiðmynd (1400x400+) virkar best</small></div>
+                    <img id="heroBgPreview" style="display:none;max-height:120px">
+                    <button class="img-remove-btn" id="heroBgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeHeroBg()"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="file" id="heroBgFileInput" accept="image/*" style="display:none" onchange="handleHeroBgUpload(event)">
+            </div>
+
+            <hr style="border:none;border-top:1px solid #e8e8e8;margin:20px 0">
+            <h4 style="color:#003897;margin-bottom:12px"><i class="fas fa-pen"></i> Texti</h4>
+            <div class="admin-field"><label>Merki (Badge)</label><input id="adm-heroBadge" placeholder="t.d. IFMA aðildarsamband"></div>
+            <div class="admin-field"><label>Fyrirsögn (nota &lt;span&gt; fyrir gull lit)</label><input id="adm-heroTitle" placeholder="Velkomin á heimasíðu <span>MTSÍ</span>"></div>
+            <div class="admin-field"><label>Texti</label><textarea id="adm-heroText"></textarea></div>
+            <div class="btn-row"><button class="admin-btn admin-btn-primary" onclick="saveHero()"><i class="fas fa-save"></i> Vista allt</button></div>
+        </div>
+
+        <!-- TAB: News -->
+        <div class="admin-tab-content" id="tab-news">
+            <div class="btn-row" style="margin-bottom:16px">
+                <button class="admin-btn admin-btn-gold" onclick="addNewsForm()"><i class="fas fa-plus"></i> Ný frétt</button>
+            </div>
+            <div id="newsAdminList"></div>
+            <!-- Add/Edit form (hidden) -->
+            <div id="newsFormArea" style="display:none">
+                <h4 style="margin-bottom:12px;color:#003897" id="newsFormLabel">Ný frétt</h4>
+                <div class="admin-field"><label>Fyrirsögn</label><input id="adm-newsHeadline"></div>
+                <div class="admin-field"><label>Texti</label><textarea id="adm-newsBody"></textarea></div>
+                <div class="admin-field">
+                    <label>Mynd / plakat (valfrjálst)</label>
+                    <div class="img-upload-area" id="newsImgUploadArea" onclick="document.getElementById('newsImgFileInput').click()">
+                        <div class="upload-placeholder" id="newsImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Smelltu til að velja mynd</div>
+                        <img id="newsImgPreview" style="display:none;max-height:100px">
+                        <button class="img-remove-btn" id="newsImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeNewsImg()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <input type="file" id="newsImgFileInput" accept="image/*" style="display:none" onchange="handleNewsImgUpload(event)">
+                </div>
+                <div class="admin-field"><label>Dagsetning (YYYY-MM-DD)</label><input id="adm-newsDate" type="date"></div>
+                <div class="admin-field"><label>Höfundur</label><input id="adm-newsAuthor" value="MTSÍ"></div>
+                <input type="hidden" id="adm-newsEditIdx" value="-1">
+                <div class="btn-row">
+                    <button class="admin-btn admin-btn-primary" onclick="saveNewsItem()"><i class="fas fa-save"></i> Vista</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="cancelNewsForm()">Hætta við</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Clubs -->
+        <div class="admin-tab-content" id="tab-clubs">
+            <div class="admin-field"><label>Titill hluta</label><input id="adm-clubsTitle"></div>
+            <div class="admin-field"><label>Undirtitill</label><input id="adm-clubsSubtitle"></div>
+            <div class="btn-row" style="margin-bottom:16px">
+                <button class="admin-btn admin-btn-gold" onclick="addClubForm()"><i class="fas fa-plus"></i> Nýtt félag</button>
+            </div>
+            <div id="clubsAdminList"></div>
+            <div id="clubFormArea" style="display:none">
+                <h4 style="margin-bottom:12px;color:#003897" id="clubFormLabel">Nýtt félag</h4>
+                <div class="admin-field"><label>Nafn</label><input id="adm-clubName"></div>
+                <div class="admin-field"><label>Staðsetning</label><input id="adm-clubLocation"></div>
+                <div class="admin-field">
+                    <label>Merki félagsins (valfrjálst)</label>
+                    <div class="img-upload-area" id="clubImgUploadArea" onclick="document.getElementById('clubImgFileInput').click()" style="padding:12px">
+                        <div class="upload-placeholder" id="clubImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Velja merki</div>
+                        <img id="clubImgPreview" style="display:none;max-height:60px">
+                        <button class="img-remove-btn" id="clubImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeClubImg()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <input type="file" id="clubImgFileInput" accept="image/*" style="display:none" onchange="handleClubImgUpload(event)">
+                </div>
+                <input type="hidden" id="adm-clubEditIdx" value="-1">
+                <div class="btn-row">
+                    <button class="admin-btn admin-btn-primary" onclick="saveClubItem()"><i class="fas fa-save"></i> Vista</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="cancelClubForm()">Hætta við</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: About -->
+        <div class="admin-tab-content" id="tab-about">
+            <div class="admin-field"><label>Titill</label><input id="adm-aboutTitle"></div>
+            <div class="admin-field"><label>Undirtitill</label><input id="adm-aboutSubtitle"></div>
+            <div class="admin-field"><label>Texti (hvert &lt;p&gt; á nýrri línu)</label><textarea id="adm-aboutBody" style="min-height:160px"></textarea></div>
+            <h4 style="margin:16px 0 8px;font-size:13px;color:#003897">Tölfræði</h4>
+            <div id="statsAdminList"></div>
+            <div class="btn-row" style="margin-top:12px">
+                <button class="admin-btn admin-btn-primary" onclick="saveAbout()"><i class="fas fa-save"></i> Vista allt</button>
+            </div>
+        </div>
+
+        <!-- TAB: Navigation -->
+        <div class="admin-tab-content" id="tab-nav">
+            <p style="font-size:12px;color:#888;margin-bottom:16px">Breyttu valmyndinni. Hvert atriði getur haft undirflokka.</p>
+            <div class="btn-row" style="margin-bottom:16px">
+                <button class="admin-btn admin-btn-gold" onclick="addNavForm()"><i class="fas fa-plus"></i> Nýtt atriði</button>
+            </div>
+            <div id="navAdminList"></div>
+            <div id="navFormArea" style="display:none">
+                <h4 style="margin-bottom:12px;color:#003897" id="navFormLabel">Nýtt valmyndaratriði</h4>
+                <div class="admin-field"><label>Titill</label><input id="adm-navTitle"></div>
+                <div class="admin-field"><label>Tengill (URL)</label><input id="adm-navLink" value="#"></div>
+                <div class="admin-field"><label>Undirflokkar (einn per línu: Titill | URL)</label><textarea id="adm-navSubs" placeholder="Um MTSÍ | #&#10;Stjórn | #"></textarea></div>
+                <input type="hidden" id="adm-navEditIdx" value="-1">
+                <div class="btn-row">
+                    <button class="admin-btn admin-btn-primary" onclick="saveNavItem()"><i class="fas fa-save"></i> Vista</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="cancelNavForm()">Hætta við</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- TAB: Footer -->
+        <div class="admin-tab-content" id="tab-footer">
+            <div class="admin-field"><label>Dálkur 1 (HTML)</label><textarea id="adm-footerCol1" style="min-height:100px"></textarea></div>
+            <div class="admin-field"><label>Dálkur 2 (HTML)</label><textarea id="adm-footerCol2" style="min-height:100px"></textarea></div>
+            <div class="admin-field"><label>Dálkur 3 (HTML)</label><textarea id="adm-footerCol3" style="min-height:100px"></textarea></div>
+            <div class="admin-field"><label>Neðri texti</label><input id="adm-footerBottom"></div>
+            <div class="btn-row"><button class="admin-btn admin-btn-primary" onclick="saveFooter()"><i class="fas fa-save"></i> Vista</button></div>
+        </div>
+
+        <!-- TAB: Pages -->
+        <div class="admin-tab-content" id="tab-pages">
+            <p style="font-size:12px;color:#888;margin-bottom:16px">Breyttu efni á undirsíðum. Texti styður HTML.</p>
+            <div id="pagesAdminList"></div>
+            <div id="pageFormArea" style="display:none">
+                <h4 style="margin-bottom:12px;color:#003897" id="pageFormLabel">Breyta síðu</h4>
+                <div class="admin-field"><label>Titill</label><input id="adm-pageTitle"></div>
+                <div class="admin-field"><label>Undirtitill</label><input id="adm-pageSubtitle"></div>
+                <div class="admin-field"><label>Efni (HTML)</label><textarea id="adm-pageBody" style="min-height:180px"></textarea></div>
+                <input type="hidden" id="adm-pageEditKey" value="">
+                <div class="btn-row">
+                    <button class="admin-btn admin-btn-primary" onclick="savePageItem()"><i class="fas fa-save"></i> Vista</button>
+                    <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('pageFormArea').style.display='none'">Hætta við</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Settings -->
+        <div class="admin-tab-content" id="tab-settings">
+            <h4 style="margin-bottom:12px;color:#003897">Aðgangsupplýsingar</h4>
+            <div class="admin-field"><label>Nýtt lykilorð</label><input type="password" id="adm-newPass"></div>
+            <div class="admin-field"><label>Staðfesta lykilorð</label><input type="password" id="adm-newPassConfirm"></div>
+            <div class="btn-row" style="margin-bottom:24px">
+                <button class="admin-btn admin-btn-primary" onclick="changePassword()"><i class="fas fa-key"></i> Breyta lykilorði</button>
+            </div>
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:20px 0">
+            <h4 style="margin-bottom:12px;color:#003897">Afritun gagna</h4>
+            <p style="font-size:12px;color:#888;margin-bottom:12px">Fluttu gögn inn/út sem JSON skrá til öryggisafritunar.</p>
+            <div class="btn-row">
+                <button class="admin-btn admin-btn-secondary" onclick="exportData()"><i class="fas fa-download"></i> Flytja út (JSON)</button>
+                <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> Flytja inn</button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            </div>
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:20px 0">
+            <div class="btn-row">
+                <button class="admin-btn admin-btn-danger" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Útskrá</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// DATA STORE - all site content lives here, persisted to localStorage
+// ============================================================
+const DEFAULT_DATA = {
+    credentials: { user: 'admin', pass: 'mtsi2026' },
+    images: { logo: '', heroBg: '' },
+    hero: {
+        badge: 'IFMA aðildarsamband',
+        title: 'Velkomin á heimasíðu <span>MTSÍ</span>',
+        text: 'Muay Thai Samband Íslands vinnur að því að efla, skipuleggja og vernda muay thai íþróttina á Íslandi. Við tryggjum örugg keppnisskilyrði og styðjum íþróttamenn okkar á alþjóðavettvangi.'
+    },
+    nav: [
+        { title:'Um okkur', link:'#aboutSection', subs:[{title:'Um MTSÍ',link:'#aboutSection'},{title:'Stjórn',link:'#boardSection'},{title:'Saga muay thai',link:'#historySection'},{title:'Uppruni',link:'#historySection'}] },
+        { title:'Félög & meðlimir', link:'#clubsSection', subs:[{title:'Aðildarfélög',link:'#clubsSection'},{title:'Skrá nýtt félag',link:'#clubsSection'},{title:'Meðlimaskrá',link:'#clubsSection'}] },
+        { title:'Keppni', link:'#contestSection', subs:[{title:'Íslandsmót',link:'#contestSection'},{title:'Alþjóðakeppnir',link:'#contestSection'},{title:'Reglur',link:'#contestSection'},{title:'Niðurstöður',link:'#contestSection'}] },
+        { title:'Dómarar', link:'#judgesSection', subs:[{title:'Dómaralisti',link:'#judgesSection'},{title:'Dómaranámskeið',link:'#judgesSection'}] },
+        { title:'Landsliðið', link:'#teamSection', subs:[{title:'Landsliðsæfingar',link:'#teamSection'},{title:'Keppendur',link:'#teamSection'},{title:'Úrslit',link:'#teamSection'}] },
+        { title:'Þjálfun', link:'#trainingSection', subs:[{title:'Þjálfunarefni',link:'#trainingSection'},{title:'Námskeið',link:'#trainingSection'},{title:'Beltapróf',link:'#trainingSection'}] },
+        { title:'Myndbandasafn', link:'#videoSection', subs:[] }
+    ],
+    news: [
+        { headline:'Íslandsmeistarar 2026!', body:'Til hamingju með frábæran árangur á Íslandsmóti í muay thai 2026! Sjá fulla niðurstöðulista hér að neðan og myndir frá keppninni.', date:'2026-03-22', author:'MTSÍ', image:'' },
+        { headline:'MTSÍ tekur afstöðu gegn óviðurkenndum keppnum', body:'Stjórn MTSÍ hvetur alla meðlimi til að taka ekki þátt í keppnum sem ekki hafa viðurkenningu sambandsins. Öryggi keppenda er í fyrirrúmi.', date:'2026-03-10', author:'MTSÍ', image:'' },
+        { headline:'Stjórnarfundur 4. mars 2026', body:'Fundargerð frá stjórnarfundi MTSÍ þann 4. mars 2026. Meðal annars var fjallað um keppnisdagatal og undirbúning næstu keppna.', date:'2026-03-04', author:'MTSÍ', image:'' },
+        { headline:'Námskeið: Muay Thai fyrir konur – Reykjavík', body:'MTSÍ býður til sérstaks muay thai námskeiðs fyrir konur. Námskeiðið er ókeypis og opið öllum aldurs- og reynsluhópum. Mætið fjölmennt!', date:'2026-02-20', author:'MTSÍ', image:'' },
+        { headline:'Skráning á Íslandsmót 2026 opin', body:'Skráning á Íslandsmót í muay thai 2026 er nú opin. Smelltu hér til að sjá skráningarlista og keppnisflokka.', date:'2026-02-15', author:'MTSÍ', image:'' }
+    ],
+    clubs: [
+        { name:'Imperium Fight Club', location:'Kópavogur', image:'' },
+        { name:'VBC Bardagaklúbbur', location:'Ísland', image:'' }
+    ],
+    clubsMeta: { title:'Aðildarfélög', subtitle:'Félög sem eru skráð hjá Muay Thai Sambandi Íslands' },
+    about: {
+        title:'Um MTSÍ',
+        subtitle:'Muay Thai Samband Íslands',
+        paragraphs: [
+            'Muay Thai Samband Íslands (MTSÍ) er landssamband muay thai íþróttarinnar á Íslandi. Sambandið er aðili að IFMA (International Federation of Muaythai Associations) sem samanstendur af yfir 130 aðildarlöndum um allan heim.',
+            'Hlutverk MTSÍ er að skipuleggja, efla og vernda muay thai íþróttina á Íslandi. Við vinnum að því að keppendur geti keppt við örugg og fagleg skilyrði, bæði innanlands og á alþjóðavettvangi.',
+            'MTSÍ starfar í nánu samstarfi við systursamtök á Norðurlöndunum, þar á meðal Svenska Muaythaiförbundet (SMTF) í Svíþjóð, og tekur virkan þátt í alþjóðlegu muay thai samstarfi.'
+        ],
+        stats: [
+            { number:'2', label:'Aðildarfélög' },
+            { number:'130+', label:'IFMA lönd' },
+            { number:'1', label:'Íslandsmót á ári' },
+            { number:'🇮🇸', label:'Landsliðið' }
+        ]
+    },
+    pages: {
+        contest: { title:'Keppni', subtitle:'Keppnir og viðburðir á vegum MTSÍ', body:'<p>MTSÍ skipuleggur Íslandsmót í muay thai árlega þar sem keppendur úr öllum aðildarfélögum landsins mætast. Keppnin eru haldin samkvæmt reglum IFMA og tryggja öryggi allra þátttakenda.</p><p>Auk Íslandsmóts taka keppendur okkar þátt í alþjóðlegum keppnum á vegum IFMA, þar á meðal Evrópumóti og Heimsmeistaramóti.</p>' },
+        judges: { title:'Dómarar', subtitle:'Dómarar og yfirdómarar MTSÍ', body:'<p>MTSÍ leggur áherslu á vel þjálfaða dómara sem tryggja réttlát og örugg keppnisskilyrði. Dómaranámskeið eru haldin reglulega í samstarfi við IFMA.</p>' },
+        team: { title:'Landsliðið', subtitle:'Landsliðið í muay thai', body:'<p>Landsliðið í muay thai eru úrvalskeppendur sem keppa fyrir Íslands hönd á alþjóðavettvangi. Landsliðið þjálfar saman undir handleiðslu reynds þjálfarateymis.</p>' },
+        training: { title:'Þjálfun', subtitle:'Þjálfunarefni, námskeið og beltapróf', body:'<p>MTSÍ býður upp á fjölbreytt þjálfunarefni og námskeið fyrir iðkendur á öllum stigum. Beltaprófakerfi MTSÍ fylgir stöðluðum kröfum IFMA.</p>' },
+        history: { title:'Saga Muay Thai', subtitle:'Uppruni og saga bardagalistarinnar', body:'<p>Muay Thai, einnig þekkt sem þaíboxning, á sér aldalanga sögu í Tælandi. Íþróttin hefur þróast úr fornum bardagalistum í háttsetta keppnisíþrótt sem er nú viðurkennd af alþjóðlegum íþróttasamtökum.</p><p>Á Íslandi hefur muay thai vaxið ört á síðustu árum og laðar að sér íþróttamenn af öllum aldri og kyni.</p>' },
+        board: { title:'Stjórn MTSÍ', subtitle:'Stjórnarmeðlimir og starfsfólk', body:'<p>Stjórn MTSÍ er kosin á aðalfundi og ber ábyrgð á daglegum rekstri og stefnumótun sambandsins. Stjórnin vinnur að því að efla muay thai á Íslandi og tryggja að sambandið uppfylli alþjóðlegar kröfur IFMA.</p>' },
+        video: { title:'Myndbandasafn', subtitle:'Myndböndin og hápunktar frá keppnum', body:'<p>Hér getur þú fundið myndböndin frá keppnum, námskeiðum og öðrum viðburðum á vegum MTSÍ. Nýtt efni bætist við reglulega.</p>' }
+    },
+    partners: [],
+    footer: {
+        col1: '<h4>MTSÍ</h4><p>Muay Thai Samband Íslands<br>Stofnað til að efla muay thai á Íslandi<br><br><a href="mailto:mtsi@muaythai.is">mtsi@muaythai.is</a></p>',
+        col2: '<h4>Flýtileiðir</h4><ul class="footer-links"><li><a href="#">Um MTSÍ</a></li><li><a href="#">Aðildarfélög</a></li><li><a href="#">Keppnisdagatal</a></li><li><a href="#">Landsliðið</a></li><li><a href="#">Hafa samband</a></li></ul>',
+        col3: '<h4>Fylgdu okkur</h4><p><a href="https://www.instagram.com/muaythai_iceland/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a><br><a href="#" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></p>',
+        bottom: '&copy; 2026 Muay Thai Samband Íslands (MTSÍ). Allur réttur áskilinn.'
+    }
+};
+
+// Load or init — version check forces update when structure changes
+const DATA_VERSION = 4;
+function loadData() {
+    try {
+        const saved = localStorage.getItem('mtsi_site_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // If old version or missing fields, merge with defaults
+            if (!parsed._version || parsed._version < DATA_VERSION) {
+                const fresh = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                // Keep user-edited content but update structure
+                fresh.news = parsed.news || fresh.news;
+                fresh.clubs = parsed.clubs || fresh.clubs;
+                fresh.about = parsed.about || fresh.about;
+                fresh.footer = parsed.footer || fresh.footer;
+                // Partners reset to defaults in v4 (removed ÍSÍ and SMTF)
+                if (parsed.credentials && parsed.credentials.pass !== 'mtsi2026') {
+                    fresh.credentials = parsed.credentials;
+                }
+                if (parsed.images) fresh.images = parsed.images;
+                fresh._version = DATA_VERSION;
+                localStorage.setItem('mtsi_site_data', JSON.stringify(fresh));
+                return fresh;
+            }
+            return parsed;
+        }
+    } catch(e) {}
+    const d = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    d._version = DATA_VERSION;
+    return d;
+}
+function saveData() { siteData._version = DATA_VERSION; localStorage.setItem('mtsi_site_data', JSON.stringify(siteData)); }
+
+let siteData = loadData();
+let isAdmin = false;
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function renderAll() {
+    renderLogo();
+    renderHero();
+    renderNav();
+    renderNews();
+    renderClubs();
+    renderAbout();
+    renderPages();
+    renderPartners();
+    renderFooter();
+}
+
+function renderLogo() {
+    if (!siteData.images) siteData.images = { logo:'', heroBg:'' };
+    const svg = document.getElementById('defaultLogo');
+    const img = document.getElementById('customLogo');
+    if (siteData.images.logo) {
+        svg.style.display = 'none';
+        img.src = siteData.images.logo;
+        img.style.display = 'block';
+    } else {
+        svg.style.display = 'block';
+        img.style.display = 'none';
+    }
+}
+
+function renderHero() {
+    document.getElementById('heroBadge').textContent = siteData.hero.badge;
+    document.getElementById('heroTitle').innerHTML = siteData.hero.title;
+    document.getElementById('heroText').textContent = siteData.hero.text;
+    const heroEl = document.getElementById('heroSection');
+    if (siteData.images && siteData.images.heroBg) {
+        heroEl.style.backgroundImage = 'url(' + siteData.images.heroBg + ')';
+        heroEl.classList.add('hero-bg-image');
+    } else {
+        heroEl.style.backgroundImage = '';
+        heroEl.classList.remove('hero-bg-image');
+    }
+}
+
+function renderNav() {
+    const ul = document.getElementById('navList');
+    ul.innerHTML = '';
+    siteData.nav.forEach(item => {
+        const li = document.createElement('li');
+        const hasSubs = item.subs && item.subs.length > 0;
+        const pageTarget = item.link.replace('#','');
+        li.innerHTML = `<a href="#" onclick="navigateTo('${pageTarget}');return false">${item.title}${hasSubs ? ' <i class="fas fa-chevron-down"></i>' : ''}</a>`;
+        if (hasSubs) {
+            const dd = document.createElement('div');
+            dd.className = 'dropdown';
+            item.subs.forEach(s => {
+                const subTarget = s.link.replace('#','');
+                dd.innerHTML += `<a href="#" onclick="navigateTo('${subTarget}');return false">${s.title}</a>`;
+            });
+            li.appendChild(dd);
+        }
+        ul.appendChild(li);
+    });
+    // Home link
+    const homeLi = document.createElement('li');
+    homeLi.innerHTML = '<a href="#" onclick="navigateTo(\'home\');return false" style="opacity:.7"><i class="fas fa-home"></i></a>';
+    ul.insertBefore(homeLi, ul.firstChild);
+    // Search icon
+    const searchLi = document.createElement('li');
+    searchLi.className = 'nav-search';
+    searchLi.innerHTML = '<i class="fas fa-search"></i>';
+    ul.appendChild(searchLi);
+}
+
+// ============================================================
+// PAGE ROUTING
+// ============================================================
+function navigateTo(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    // Show target page
+    const target = document.querySelector('[data-page="' + pageId + '"]');
+    if (target) {
+        target.classList.add('active');
+    } else {
+        // Fallback to home
+        document.querySelector('[data-page="home"]').classList.add('active');
+    }
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Update hash for bookmarking
+    if (pageId === 'home') {
+        history.pushState(null, '', window.location.pathname);
+    } else {
+        history.pushState(null, '', '#' + pageId);
+    }
+}
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function() {
+    const hash = window.location.hash.replace('#','');
+    navigateTo(hash || 'home');
+});
+
+// On page load, check hash
+function checkInitialRoute() {
+    const hash = window.location.hash.replace('#','');
+    if (hash && hash !== '') {
+        navigateTo(hash);
+    }
+}
+
+function renderNews() {
+    document.getElementById('newsTitle').textContent = 'Fréttir';
+    document.getElementById('newsSubtitle').textContent = 'Nýjustu fréttir frá Muay Thai Sambandi Íslands';
+    const grid = document.getElementById('newsGrid');
+    grid.innerHTML = '';
+    siteData.news.forEach((n, i) => {
+        const imgHtml = n.image ? `<img src="${n.image}" class="news-card-img" alt="${n.headline}">` : '';
+        grid.innerHTML += `
+        <article class="news-card" data-idx="${i}">
+            ${imgHtml}
+            <h3><a href="#">${n.headline}</a></h3>
+            <p>${n.body}</p>
+            <a href="#" class="read-more">Lesa meira »</a>
+            <div class="news-meta"><span>${n.author}</span> • <span>${n.date}</span></div>
+        </article>`;
+    });
+}
+
+function renderClubs() {
+    document.getElementById('clubsTitle').textContent = siteData.clubsMeta.title;
+    document.getElementById('clubsSubtitle').textContent = siteData.clubsMeta.subtitle;
+    // Build club cards HTML
+    let clubsHtml = '';
+    siteData.clubs.forEach((c, i) => {
+        const iconHtml = c.image
+            ? `<img src="${c.image}" class="club-card-logo" alt="${c.name}">`
+            : `<div class="club-icon"><i class="fas fa-fist-raised"></i></div>`;
+        clubsHtml += `
+        <div class="club-card" data-idx="${i}">
+            ${iconHtml}
+            <div class="club-info"><h4>${c.name}</h4><span><i class="fas fa-map-marker-alt"></i> ${c.location}</span></div>
+        </div>`;
+    });
+    // Render on frontpage
+    document.getElementById('clubsGrid').innerHTML = clubsHtml;
+    // Render on dedicated clubs page
+    const clubsPageGrid = document.getElementById('clubsPageGrid');
+    if (clubsPageGrid) {
+        clubsPageGrid.innerHTML = clubsHtml;
+        document.getElementById('clubsPageTitle').textContent = siteData.clubsMeta.title;
+        document.getElementById('clubsPageSubtitle').textContent = siteData.clubsMeta.subtitle;
+    }
+}
+
+function renderAbout() {
+    document.getElementById('aboutTitle').textContent = siteData.about.title;
+    document.getElementById('aboutSubtitle').textContent = siteData.about.subtitle;
+    const textDiv = document.getElementById('aboutText');
+    const bodyHtml = siteData.about.paragraphs.map(p => `<p>${p}</p>`).join('');
+    textDiv.innerHTML = bodyHtml;
+    const statsDiv = document.getElementById('aboutStats');
+    statsDiv.innerHTML = '';
+    siteData.about.stats.forEach(s => {
+        statsDiv.innerHTML += `<div class="stat-box"><div class="number">${s.number}</div><div class="label">${s.label}</div></div>`;
+    });
+    // Dedicated about page
+    const aboutPageText = document.getElementById('aboutPageText');
+    if (aboutPageText) {
+        document.getElementById('aboutPageTitle').textContent = siteData.about.title;
+        document.getElementById('aboutPageSubtitle').textContent = siteData.about.subtitle;
+        aboutPageText.innerHTML = bodyHtml;
+    }
+}
+
+function renderPartners() {}
+
+function renderFooter() {
+    const grid = document.getElementById('footerGrid');
+    grid.innerHTML = `<div>${siteData.footer.col1}</div><div>${siteData.footer.col2}</div><div>${siteData.footer.col3}</div>`;
+    document.getElementById('footerBottom').innerHTML = siteData.footer.bottom;
+}
+
+// ============================================================
+// ADMIN AUTH
+// ============================================================
+
+function openLogin() {
+    if (isAdmin) { toggleAdminPanel(); return; }
+    document.getElementById('loginModal').classList.add('active');
+    document.getElementById('loginUser').focus();
+}
+function closeLogin() { document.getElementById('loginModal').classList.remove('active'); document.getElementById('loginError').style.display='none'; }
+
+function attemptLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    if (u === siteData.credentials.user && p === siteData.credentials.pass) {
+        isAdmin = true;
+        closeLogin();
+        document.getElementById('adminToolbar').classList.add('active');
+        document.getElementById('adminLoginBtn').classList.add('logged-in');
+        document.getElementById('adminLoginBtn').innerHTML = '<i class="fas fa-cog"></i> Stjórnborð';
+        showToast('Velkomin, stjórnandi!', 'success');
+        populateAdminFields();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+}
+
+function adminLogout() {
+    isAdmin = false;
+    document.getElementById('adminToolbar').classList.remove('active');
+    document.getElementById('adminPanel').classList.remove('open');
+    document.getElementById('adminLoginBtn').classList.remove('logged-in');
+    document.getElementById('adminLoginBtn').innerHTML = '<i class="fas fa-lock"></i> Stjórnandi';
+    showToast('Útskráning tókst', 'success');
+}
+
+function changePassword() {
+    const p1 = document.getElementById('adm-newPass').value;
+    const p2 = document.getElementById('adm-newPassConfirm').value;
+    if (!p1 || p1.length < 4) { showToast('Lykilorð verður að vera a.m.k. 4 stafir', 'error'); return; }
+    if (p1 !== p2) { showToast('Lykilorð stemma ekki', 'error'); return; }
+    siteData.credentials.pass = p1;
+    saveData();
+    showToast('Lykilorði breytt!', 'success');
+    document.getElementById('adm-newPass').value = '';
+    document.getElementById('adm-newPassConfirm').value = '';
+}
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+
+function toggleAdminPanel() {
+    document.getElementById('adminPanel').classList.toggle('open');
+}
+
+// Tabs
+document.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    checkInitialRoute();
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+});
+
+function populateAdminFields() {
+    // Hero
+    document.getElementById('adm-heroBadge').value = siteData.hero.badge;
+    document.getElementById('adm-heroTitle').value = siteData.hero.title;
+    document.getElementById('adm-heroText').value = siteData.hero.text;
+    // Clubs meta
+    document.getElementById('adm-clubsTitle').value = siteData.clubsMeta.title;
+    document.getElementById('adm-clubsSubtitle').value = siteData.clubsMeta.subtitle;
+    // About
+    document.getElementById('adm-aboutTitle').value = siteData.about.title;
+    document.getElementById('adm-aboutSubtitle').value = siteData.about.subtitle;
+    document.getElementById('adm-aboutBody').value = siteData.about.paragraphs.join('\n\n');
+    // Footer
+    document.getElementById('adm-footerCol1').value = siteData.footer.col1;
+    document.getElementById('adm-footerCol2').value = siteData.footer.col2;
+    document.getElementById('adm-footerCol3').value = siteData.footer.col3;
+    document.getElementById('adm-footerBottom').value = siteData.footer.bottom;
+    // Image previews
+    if (!siteData.images) siteData.images = { logo:'', heroBg:'' };
+    updateImgPreview('logo', siteData.images.logo);
+    updateImgPreview('heroBg', siteData.images.heroBg);
+    // Render admin lists
+    renderNewsAdmin();
+    renderClubsAdmin();
+    renderStatsAdmin();
+    renderNavAdmin();
+    renderPagesAdmin();
+    renderPartnersAdmin();
+}
+
+// ============================================================
+// HERO SAVE
+// ============================================================
+function saveHero() {
+    siteData.hero.badge = document.getElementById('adm-heroBadge').value;
+    siteData.hero.title = document.getElementById('adm-heroTitle').value;
+    siteData.hero.text = document.getElementById('adm-heroText').value;
+    saveData(); renderHero(); showToast('Forsíða vistuð!', 'success');
+}
+
+// ============================================================
+// IMAGE UPLOAD HELPERS
+// ============================================================
+
+function readFileAsDataURL(file, maxWidth, callback) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        if (!maxWidth) { callback(e.target.result); return; }
+        // Resize for storage efficiency
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > maxWidth) { h = h * (maxWidth / w); w = maxWidth; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            callback(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function updateImgPreview(key, dataUrl) {
+    const preview = document.getElementById(key + 'Preview');
+    const placeholder = document.getElementById(key + 'Placeholder');
+    const removeBtn = document.getElementById(key + 'RemoveBtn');
+    const area = document.getElementById(key + 'UploadArea');
+    if (dataUrl) {
+        preview.src = dataUrl; preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+        if (removeBtn) removeBtn.style.display = 'flex';
+        if (area) area.classList.add('has-image');
+    } else {
+        preview.style.display = 'none'; preview.src = '';
+        if (placeholder) placeholder.style.display = 'block';
+        if (removeBtn) removeBtn.style.display = 'none';
+        if (area) area.classList.remove('has-image');
+    }
+}
+
+// Logo upload
+function handleLogoUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    readFileAsDataURL(file, 300, function(dataUrl) {
+        if (!siteData.images) siteData.images = { logo:'', heroBg:'' };
+        siteData.images.logo = dataUrl;
+        updateImgPreview('logo', dataUrl);
+        saveData(); renderLogo();
+        showToast('Merki uppfært!', 'success');
+    });
+    event.target.value = '';
+}
+function removeLogo() {
+    siteData.images.logo = '';
+    updateImgPreview('logo', '');
+    saveData(); renderLogo();
+    showToast('Merki fjarlægt', 'success');
+}
+
+// Hero background upload
+function handleHeroBgUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    readFileAsDataURL(file, 1600, function(dataUrl) {
+        if (!siteData.images) siteData.images = { logo:'', heroBg:'' };
+        siteData.images.heroBg = dataUrl;
+        updateImgPreview('heroBg', dataUrl);
+        saveData(); renderHero();
+        showToast('Forsíðuborði uppfærður!', 'success');
+    });
+    event.target.value = '';
+}
+function removeHeroBg() {
+    siteData.images.heroBg = '';
+    updateImgPreview('heroBg', '');
+    saveData(); renderHero();
+    showToast('Bakgrunnsmynd fjarlægð', 'success');
+}
+
+// News image upload (temporary state for form)
+let tempNewsImage = '';
+function handleNewsImgUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    readFileAsDataURL(file, 800, function(dataUrl) {
+        tempNewsImage = dataUrl;
+        updateImgPreview('newsImg', dataUrl);
+    });
+    event.target.value = '';
+}
+function removeNewsImg() {
+    tempNewsImage = '';
+    updateImgPreview('newsImg', '');
+}
+
+// Club image upload (temporary state for form)
+let tempClubImage = '';
+function handleClubImgUpload(event) {
+    const file = event.target.files[0]; if (!file) return;
+    readFileAsDataURL(file, 200, function(dataUrl) {
+        tempClubImage = dataUrl;
+        updateImgPreview('clubImg', dataUrl);
+    });
+    event.target.value = '';
+}
+function removeClubImg() {
+    tempClubImage = '';
+    updateImgPreview('clubImg', '');
+}
+
+// ============================================================
+// NEWS CRUD
+// ============================================================
+function renderNewsAdmin() {
+    const list = document.getElementById('newsAdminList');
+    list.innerHTML = '';
+    siteData.news.forEach((n, i) => {
+        const imgBadge = n.image ? '<span class="badge" style="background:#4caf50">Mynd</span>' : '';
+        list.innerHTML += `
+        <div class="admin-item">
+            <span class="badge">${n.date}</span>${imgBadge}
+            <h4>${n.headline}</h4>
+            <p>${n.body.substring(0, 80)}...</p>
+            <div class="admin-item-actions">
+                <button class="admin-btn admin-btn-secondary" onclick="editNews(${i})"><i class="fas fa-edit"></i> Breyta</button>
+                <button class="admin-btn admin-btn-danger" onclick="deleteNews(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`;
+    });
+}
+function addNewsForm() {
+    document.getElementById('newsFormLabel').textContent = 'Ný frétt';
+    document.getElementById('adm-newsHeadline').value = '';
+    document.getElementById('adm-newsBody').value = '';
+    document.getElementById('adm-newsDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('adm-newsAuthor').value = 'MTSÍ';
+    document.getElementById('adm-newsEditIdx').value = '-1';
+    tempNewsImage = '';
+    updateImgPreview('newsImg', '');
+    document.getElementById('newsFormArea').style.display = 'block';
+}
+function editNews(i) {
+    const n = siteData.news[i];
+    document.getElementById('newsFormLabel').textContent = 'Breyta frétt';
+    document.getElementById('adm-newsHeadline').value = n.headline;
+    document.getElementById('adm-newsBody').value = n.body;
+    document.getElementById('adm-newsDate').value = n.date;
+    document.getElementById('adm-newsAuthor').value = n.author;
+    document.getElementById('adm-newsEditIdx').value = i;
+    tempNewsImage = n.image || '';
+    updateImgPreview('newsImg', tempNewsImage);
+    document.getElementById('newsFormArea').style.display = 'block';
+}
+function deleteNews(i) {
+    if (!confirm('Eyða þessari frétt?')) return;
+    siteData.news.splice(i, 1);
+    saveData(); renderNews(); renderNewsAdmin(); showToast('Frétt eytt', 'success');
+}
+function saveNewsItem() {
+    const idx = parseInt(document.getElementById('adm-newsEditIdx').value);
+    const item = {
+        headline: document.getElementById('adm-newsHeadline').value,
+        body: document.getElementById('adm-newsBody').value,
+        date: document.getElementById('adm-newsDate').value,
+        author: document.getElementById('adm-newsAuthor').value,
+        image: tempNewsImage || ''
+    };
+    if (!item.headline) { showToast('Fyrirsögn vantar', 'error'); return; }
+    if (idx === -1) siteData.news.unshift(item);
+    else siteData.news[idx] = item;
+    tempNewsImage = '';
+    saveData(); renderNews(); renderNewsAdmin(); cancelNewsForm(); showToast('Frétt vistuð!', 'success');
+}
+function cancelNewsForm() { document.getElementById('newsFormArea').style.display = 'none'; }
+
+// ============================================================
+// CLUBS CRUD
+// ============================================================
+function renderClubsAdmin() {
+    const list = document.getElementById('clubsAdminList');
+    list.innerHTML = '';
+    siteData.clubs.forEach((c, i) => {
+        list.innerHTML += `
+        <div class="admin-item">
+            <h4><i class="fas fa-fist-raised" style="color:#003897;margin-right:8px"></i>${c.name}</h4>
+            <p><i class="fas fa-map-marker-alt"></i> ${c.location}</p>
+            <div class="admin-item-actions">
+                <button class="admin-btn admin-btn-secondary" onclick="editClub(${i})"><i class="fas fa-edit"></i> Breyta</button>
+                <button class="admin-btn admin-btn-danger" onclick="deleteClub(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`;
+    });
+}
+function addClubForm() {
+    document.getElementById('clubFormLabel').textContent = 'Nýtt félag';
+    document.getElementById('adm-clubName').value = '';
+    document.getElementById('adm-clubLocation').value = '';
+    document.getElementById('adm-clubEditIdx').value = '-1';
+    tempClubImage = '';
+    updateImgPreview('clubImg', '');
+    document.getElementById('clubFormArea').style.display = 'block';
+}
+function editClub(i) {
+    const c = siteData.clubs[i];
+    document.getElementById('clubFormLabel').textContent = 'Breyta félagi';
+    document.getElementById('adm-clubName').value = c.name;
+    document.getElementById('adm-clubLocation').value = c.location;
+    document.getElementById('adm-clubEditIdx').value = i;
+    tempClubImage = c.image || '';
+    updateImgPreview('clubImg', tempClubImage);
+    document.getElementById('clubFormArea').style.display = 'block';
+}
+function deleteClub(i) {
+    if (!confirm('Eyða þessu félagi?')) return;
+    siteData.clubs.splice(i, 1);
+    saveData(); renderClubs(); renderClubsAdmin(); showToast('Félagi eytt', 'success');
+}
+function saveClubItem() {
+    const idx = parseInt(document.getElementById('adm-clubEditIdx').value);
+    const item = { name: document.getElementById('adm-clubName').value, location: document.getElementById('adm-clubLocation').value, image: tempClubImage || '' };
+    if (!item.name) { showToast('Nafn vantar', 'error'); return; }
+    if (idx === -1) siteData.clubs.push(item);
+    else siteData.clubs[idx] = item;
+    tempClubImage = '';
+    // Update clubs meta
+    siteData.clubsMeta.title = document.getElementById('adm-clubsTitle').value;
+    siteData.clubsMeta.subtitle = document.getElementById('adm-clubsSubtitle').value;
+    saveData(); renderClubs(); renderClubsAdmin(); cancelClubForm(); showToast('Félag vistað!', 'success');
+}
+function cancelClubForm() { document.getElementById('clubFormArea').style.display = 'none'; }
+
+// ============================================================
+// ABOUT SAVE
+// ============================================================
+function renderStatsAdmin() {
+    const list = document.getElementById('statsAdminList');
+    list.innerHTML = '';
+    siteData.about.stats.forEach((s, i) => {
+        list.innerHTML += `
+        <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <input style="width:80px;padding:6px 10px;border:1.5px solid #e0e0e0;border-radius:4px;font-size:13px" value="${s.number}" onchange="siteData.about.stats[${i}].number=this.value">
+            <input style="flex:1;padding:6px 10px;border:1.5px solid #e0e0e0;border-radius:4px;font-size:13px" value="${s.label}" onchange="siteData.about.stats[${i}].label=this.value">
+            <button class="admin-btn admin-btn-danger" style="padding:6px 10px" onclick="siteData.about.stats.splice(${i},1);renderStatsAdmin()"><i class="fas fa-trash"></i></button>
+        </div>`;
+    });
+    list.innerHTML += `<button class="admin-btn admin-btn-secondary" style="margin-top:4px" onclick="siteData.about.stats.push({number:'0',label:'Nýtt'});renderStatsAdmin()"><i class="fas fa-plus"></i> Bæta við tölfræði</button>`;
+}
+function saveAbout() {
+    siteData.about.title = document.getElementById('adm-aboutTitle').value;
+    siteData.about.subtitle = document.getElementById('adm-aboutSubtitle').value;
+    siteData.about.paragraphs = document.getElementById('adm-aboutBody').value.split(/\n\n+/).filter(p => p.trim());
+    saveData(); renderAbout(); showToast('Um okkur vistað!', 'success');
+}
+
+// ============================================================
+// NAV CRUD
+// ============================================================
+function renderNavAdmin() {
+    const list = document.getElementById('navAdminList');
+    list.innerHTML = '';
+    siteData.nav.forEach((n, i) => {
+        const subCount = n.subs ? n.subs.length : 0;
+        list.innerHTML += `
+        <div class="admin-item">
+            <h4>${n.title}</h4>
+            <p>${subCount} undirflokk${subCount !== 1 ? 'ar' : 'ur'}</p>
+            <div class="admin-item-actions">
+                <button class="admin-btn admin-btn-secondary" onclick="editNav(${i})"><i class="fas fa-edit"></i> Breyta</button>
+                <button class="admin-btn admin-btn-danger" onclick="deleteNav(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`;
+    });
+}
+function addNavForm() {
+    document.getElementById('navFormLabel').textContent = 'Nýtt valmyndaratriði';
+    document.getElementById('adm-navTitle').value = '';
+    document.getElementById('adm-navLink').value = '#';
+    document.getElementById('adm-navSubs').value = '';
+    document.getElementById('adm-navEditIdx').value = '-1';
+    document.getElementById('navFormArea').style.display = 'block';
+}
+function editNav(i) {
+    const n = siteData.nav[i];
+    document.getElementById('navFormLabel').textContent = 'Breyta valmyndaratriði';
+    document.getElementById('adm-navTitle').value = n.title;
+    document.getElementById('adm-navLink').value = n.link;
+    document.getElementById('adm-navSubs').value = (n.subs||[]).map(s => s.title + ' | ' + s.link).join('\n');
+    document.getElementById('adm-navEditIdx').value = i;
+    document.getElementById('navFormArea').style.display = 'block';
+}
+function deleteNav(i) {
+    if (!confirm('Eyða þessu valmyndaratriði?')) return;
+    siteData.nav.splice(i, 1);
+    saveData(); renderNav(); renderNavAdmin(); showToast('Valmyndaratriði eytt', 'success');
+}
+function saveNavItem() {
+    const idx = parseInt(document.getElementById('adm-navEditIdx').value);
+    const subsText = document.getElementById('adm-navSubs').value.trim();
+    const subs = subsText ? subsText.split('\n').filter(l=>l.trim()).map(l => {
+        const parts = l.split('|').map(s=>s.trim());
+        return { title: parts[0]||'', link: parts[1]||'#' };
+    }) : [];
+    const item = { title: document.getElementById('adm-navTitle').value, link: document.getElementById('adm-navLink').value, subs };
+    if (!item.title) { showToast('Titill vantar', 'error'); return; }
+    if (idx === -1) siteData.nav.push(item);
+    else siteData.nav[idx] = item;
+    saveData(); renderNav(); renderNavAdmin(); cancelNavForm(); showToast('Valmynd vistuð!', 'success');
+}
+function cancelNavForm() { document.getElementById('navFormArea').style.display = 'none'; }
+
+// ============================================================
+// PAGES (sub-sections) RENDER & CRUD
+// ============================================================
+
+const PAGE_LABELS = {
+    contest:'Keppni', judges:'Dómarar', team:'Landsliðið',
+    training:'Þjálfun', history:'Saga Muay Thai', board:'Stjórn', video:'Myndbandasafn'
+};
+
+function renderPages() {
+    if (!siteData.pages) return;
+    Object.keys(PAGE_LABELS).forEach(key => {
+        const page = siteData.pages[key];
+        if (!page) return;
+        const titleEl = document.getElementById(key + 'Title');
+        const subEl = document.getElementById(key + 'Subtitle');
+        const textEl = document.getElementById(key + 'Text');
+        if (titleEl) titleEl.textContent = page.title;
+        if (subEl) subEl.textContent = page.subtitle;
+        if (textEl) textEl.innerHTML = page.body;
+    });
+}
+
+function renderPagesAdmin() {
+    if (!siteData.pages) return;
+    const list = document.getElementById('pagesAdminList');
+    list.innerHTML = '';
+    Object.keys(PAGE_LABELS).forEach(key => {
+        const page = siteData.pages[key];
+        if (!page) return;
+        list.innerHTML += `
+        <div class="admin-item">
+            <h4><i class="fas fa-file-alt" style="color:#003897;margin-right:8px"></i>${page.title}</h4>
+            <p>${page.subtitle}</p>
+            <div class="admin-item-actions">
+                <button class="admin-btn admin-btn-secondary" onclick="editPage('${key}')"><i class="fas fa-edit"></i> Breyta</button>
+            </div>
+        </div>`;
+    });
+}
+
+function editPage(key) {
+    const page = siteData.pages[key];
+    document.getElementById('pageFormLabel').textContent = 'Breyta: ' + PAGE_LABELS[key];
+    document.getElementById('adm-pageTitle').value = page.title;
+    document.getElementById('adm-pageSubtitle').value = page.subtitle;
+    document.getElementById('adm-pageBody').value = page.body;
+    document.getElementById('adm-pageEditKey').value = key;
+    document.getElementById('pageFormArea').style.display = 'block';
+}
+
+function savePageItem() {
+    const key = document.getElementById('adm-pageEditKey').value;
+    siteData.pages[key] = {
+        title: document.getElementById('adm-pageTitle').value,
+        subtitle: document.getElementById('adm-pageSubtitle').value,
+        body: document.getElementById('adm-pageBody').value
+    };
+    saveData(); renderPages(); renderPagesAdmin();
+    document.getElementById('pageFormArea').style.display = 'none';
+    showToast(PAGE_LABELS[key] + ' vistuð!', 'success');
+}
+
+function renderPartnersAdmin() {}
+
+// ============================================================
+// FOOTER SAVE
+// ============================================================
+function saveFooter() {
+    siteData.footer.col1 = document.getElementById('adm-footerCol1').value;
+    siteData.footer.col2 = document.getElementById('adm-footerCol2').value;
+    siteData.footer.col3 = document.getElementById('adm-footerCol3').value;
+    siteData.footer.bottom = document.getElementById('adm-footerBottom').value;
+    saveData(); renderFooter(); showToast('Fótur vistaður!', 'success');
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+function exportData() {
+    const blob = new Blob([JSON.stringify(siteData, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'mtsi_backup_' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    showToast('Gögn flutt út!', 'success');
+}
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            siteData = imported;
+            saveData();
+            renderAll();
+            populateAdminFields();
+            showToast('Gögn flutt inn!', 'success');
+        } catch(err) {
+            showToast('Villa í JSON skrá', 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+
+</body>
+</html>
