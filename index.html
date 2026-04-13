@@ -933,78 +933,45 @@ function loadData() {
 
     /* --- GitHub Sync --- */
     async function pushToGitHub() {
-      const REPO_OWNER = 'mtsi-lgtm';
-      const REPO_NAME = 'mtsi-website';
-      const FILE_PATH = 'index.html';
-      const _r = 'hfX2h13JHkAvCtrMyNhKH3TQ5uL9PejdXPJ5_phg';
-      const ghToken = window['local'+'Storage'].getItem('mtsi_gh_token') || _r.split('').reverse().join('');
-      if (!ghToken) { console.log('No GitHub token set, skipping sync.'); return; }
-      const API = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
-
       try {
-        document.body.style.cursor = 'wait';
-        const getResp = await fetch(API, {
-          headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' }
+        const fnUrl = '/.netlify/functions/github-sync';
+        const getRes = await fetch(fnUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get' })
         });
-        if (!getResp.ok) throw new Error('GitHub GET failed: ' + getResp.status);
-        const fileInfo = await getResp.json();
-
-        const raw = atob(fileInfo.content.replace(/\n/g, ''));
-        const bArr = new Uint8Array(raw.length);
-        for (let i = 0; i < raw.length; i++) bArr[i] = raw.charCodeAt(i);
-        const currentHTML = new TextDecoder('utf-8').decode(bArr);
-
-        const mS = '/* DD_START */';
-        const mE = '/* DD_END */';
-        const ms = currentHTML.indexOf(mS);
-        const me = currentHTML.indexOf(mE);
-        if (ms === -1 || me === -1) throw new Error('Markers not found in source');
-
-        const pubData = JSON.parse(JSON.stringify(siteData));
-        const newDD = mS + '\nconst DEFAULT_DATA = ' + JSON.stringify(pubData, null, 4) + ';\n' + mE;
-        const newHTML = currentHTML.substring(0, ms) + newDD + currentHTML.substring(me + mE.length);
-
-        const enc = new TextEncoder();
-        const utf8 = enc.encode(newHTML);
-        let binStr = '';
-        const cs = 32768;
-        for (let i = 0; i < utf8.length; i += cs) {
-          const ch = utf8.subarray(i, Math.min(i + cs, utf8.length));
-          binStr += String.fromCharCode.apply(null, ch);
-        }
-        const b64 = btoa(binStr);
-
-        const putResp = await fetch(API, {
-          method: 'PUT',
-          headers: { 'Authorization': 'token ' + ghToken, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-          body: JSON.stringify({ message: 'Update site via admin', content: b64, sha: fileInfo.sha })
+        if (!getRes.ok) throw new Error('GitHub GET failed: ' + getRes.status);
+        const fileData = await getRes.json();
+        const rawBytes = Uint8Array.from(atob(fileData.content.replace(/\n/g, '')), c => c.charCodeAt(0));
+        let fileText = new TextDecoder('utf-8').decode(rawBytes);
+        const startMarker = '/* DD_START */';
+        const endMarker = '/* DD_END */';
+        const si = fileText.indexOf(startMarker);
+        const ei = fileText.indexOf(endMarker);
+        if (si === -1 || ei === -1) throw new Error('Markers not found');
+        const before = fileText.substring(0, si + startMarker.length);
+        const after = fileText.substring(ei);
+        const newDefault = '\n    const DEFAULT_DATA = ' + JSON.stringify(siteData, null, 4) + ';\n    ';
+        const newHtml = before + newDefault + after;
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(newHtml);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const b64 = btoa(binary);
+        const putRes = await fetch(fnUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'put', content: b64, sha: fileData.sha, message: 'Update site via admin' })
         });
-        if (!putResp.ok) { const err = await putResp.text(); throw new Error('GitHub PUT: ' + putResp.status + ' ' + err); }
-        
-        document.body.style.cursor = '';
-        alert('Published! Changes go live in ~30 seconds.');
+        if (!putRes.ok) throw new Error('GitHub PUT failed: ' + putRes.status);
+        alert('Published successfully!');
       } catch (e) {
-        document.body.style.cursor = '';
-        console.error('Sync error:', e);
         alert('Publish failed: ' + e.message);
       }
     }
 
-    function renderGitHubConfig() {
-      const panel = document.getElementById('admin-panel');
-      if (!panel) return;
-      // Check if already added
-      if (document.getElementById('gh-config-section')) return;
-      const section = document.createElement('div');
-      section.id = 'gh-config-section';
-      section.style.cssText = 'margin-top:20px;padding:15px;background:#1a1a2e;border-radius:8px;border:1px solid #444;';
-      const stored = window['local'+'Storage'].getItem('mtsi_gh_token') || '';
-      section.innerHTML = '<h3 style="color:#0f0;margin:0 0 10px">GitHub Sync</h3>' +
-        '<label style="color:#ccc;font-size:13px">GitHub Token:</label>' +
-        '<input type="password" id="gh-token-input" value="' + stored + '" style="width:100%;padding:8px;margin:5px 0 10px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;font-family:monospace;font-size:13px;" placeholder="ghp_...">' +
-        '<button onclick="window[\'local\'+\'Storage\'].setItem(\'mtsi_gh_token\',document.getElementById(\'gh-token-input\').value);alert(\'Token saved!\')" style="padding:8px 16px;background:#333;color:#fff;border:1px solid #555;border-radius:4px;cursor:pointer;margin-right:10px;">Save Token</button>';
-      panel.appendChild(section);
-    }
+
+
 
     function saveData() {
       window['local'+'Storage']['set'+'Item']('mtsi_site_data', JSON.stringify(siteData));
@@ -1253,7 +1220,6 @@ function changePassword() {
 function toggleAdminPanel() {
     document.getElementById('adminPanel').classList.toggle('open');
 
-      renderGitHubConfig();
     }
 
 // Tabs
