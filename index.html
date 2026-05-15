@@ -202,10 +202,71 @@
         .hero-bg-image { background-size:cover; background-position:center; }
         .hero-bg-image::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,20,60,.7); z-index:0; }
 
+        /* ===== PUBLIC SIGNUP FORM ===== */
+        .signup-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; margin-bottom:8px; }
+        .signup-field { display:flex; flex-direction:column; margin-bottom:8px; }
+        .signup-field label { font-size:11px; font-weight:700; color:#666; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+        .signup-field input, .signup-field textarea, .signup-field select { width:100%; padding:11px 14px; border:1.5px solid #e0e0e0; border-radius:6px; font-size:14px; font-family:'Roboto',sans-serif; outline:none; transition:border-color .2s; background:#fafafa; }
+        .signup-field input:focus, .signup-field textarea:focus { border-color:#003897; background:#fff; }
+        .signup-field textarea { resize:vertical; min-height:90px; }
+
+        /* ===== ADMIN: APPLICATIONS TABLE (wholesale-style) ===== */
+        .ap-stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+        .ap-stat { background:#f8f9fb; border:1px solid #e8eaef; border-radius:8px; padding:10px 12px; }
+        .ap-stat-label { font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:#888; margin-bottom:4px; font-weight:600; }
+        .ap-stat-value { font-size:20px; font-weight:700; color:#1a1a1a; }
+        .ap-stat-value.pending { color:#d4a017; }
+        .ap-stat-value.approved { color:#4caf50; }
+        .ap-stat-value.rejected { color:#dc3232; }
+        .ap-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+        .ap-search { flex:1; min-width:160px; padding:8px 12px; border:1.5px solid #e0e0e0; border-radius:6px; font-size:13px; outline:none; transition:border-color .2s; }
+        .ap-search:focus { border-color:#003897; }
+        .ap-filter-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+        .ap-filter { padding:5px 12px; border-radius:99px; border:1.5px solid #e0e0e0; background:#fff; font-size:11px; font-weight:600; color:#888; cursor:pointer; transition:all .15s; }
+        .ap-filter:hover { color:#003897; border-color:#003897; }
+        .ap-filter.active { background:rgba(0,56,151,.08); border-color:#003897; color:#003897; }
+        .ap-table-wrap { overflow-x:auto; border:1px solid #e8eaef; border-radius:8px; }
+        .ap-table { width:100%; border-collapse:collapse; font-size:13px; background:#fff; }
+        .ap-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:#888; padding:10px 12px; background:#f8f9fb; border-bottom:1.5px solid #e8eaef; font-weight:700; }
+        .ap-table td { padding:11px 12px; border-bottom:1px solid #f0f0f0; color:#444; vertical-align:middle; }
+        .ap-table tbody tr { cursor:pointer; transition:background .12s; }
+        .ap-table tbody tr:hover td { background:#fafbfd; }
+        .ap-table tbody tr:last-child td { border-bottom:none; }
+        .ap-tag { display:inline-block; padding:3px 9px; border-radius:99px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+        .ap-tag.pending  { background:#fef8e1; color:#a07a08; }
+        .ap-tag.approved { background:#e7f7e9; color:#2d7d36; }
+        .ap-tag.rejected { background:#fde7e7; color:#b22222; }
+        .ap-tag.contacted{ background:#e3eefc; color:#1a4ea3; }
+        .ap-empty { text-align:center; padding:40px 20px; color:#999; font-size:13px; background:#fafbfd; border-radius:8px; }
+
+        /* Applications detail modal */
+        .ap-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:10050; display:none; align-items:center; justify-content:center; padding:20px; }
+        .ap-modal-overlay.open { display:flex; }
+        .ap-modal { background:#fff; border-radius:12px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 12px 48px rgba(0,0,0,.25); }
+        .ap-modal-hdr { background:linear-gradient(135deg,#003897,#00245e); color:#fff; padding:20px 24px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:flex-start; }
+        .ap-modal-hdr h3 { font-size:17px; font-weight:700; margin-bottom:4px; }
+        .ap-modal-hdr .ap-modal-meta { font-size:11px; opacity:.75; }
+        .ap-modal-close { background:none; border:none; color:#fff; font-size:24px; cursor:pointer; opacity:.7; line-height:1; }
+        .ap-modal-close:hover { opacity:1; }
+        .ap-modal-body { padding:20px 24px; }
+        .ap-modal-section-title { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#003897; font-weight:700; margin:16px 0 10px; padding-bottom:6px; border-bottom:1px solid #f0f0f0; }
+        .ap-modal-section-title:first-child { margin-top:0; }
+        .ap-modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+        .ap-modal-field { display:flex; flex-direction:column; }
+        .ap-modal-field label { font-size:10px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
+        .ap-modal-field input, .ap-modal-field textarea, .ap-modal-field select { padding:8px 11px; border:1.5px solid #e0e0e0; border-radius:5px; font-size:13px; font-family:'Roboto',sans-serif; outline:none; }
+        .ap-modal-field input:focus, .ap-modal-field textarea:focus, .ap-modal-field select:focus { border-color:#003897; }
+        .ap-modal-field.full { grid-column:1/-1; }
+        .ap-modal-footer { padding:16px 24px; border-top:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center; gap:8px; background:#fafbfd; border-radius:0 0 12px 12px; }
+
         /* Responsive */
         @media(max-width:900px){
             .news-grid{grid-template-columns:1fr}.clubs-grid{grid-template-columns:1fr}.about-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}.header-actions .header-action{display:none}.header-actions{gap:8px}.admin-login-btn{font-size:11px;padding:6px 10px}.hero h1{font-size:28px}.hero-graphic{display:none}.admin-panel{width:100%}
+            .signup-grid{grid-template-columns:1fr}
+            .ap-stat-grid{grid-template-columns:repeat(2,1fr)}
+            .ap-modal-grid{grid-template-columns:1fr}
         }
+
     </style>
 </head>
 <body>
@@ -336,6 +397,100 @@
 </section>
 </div>
 
+<!-- ===== PAGE: SIGNUP (new club applies for federation membership) ===== -->
+<div data-page="signupSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:780px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title">Skrá nýtt félag</h2>
+        <p class="section-subtitle">Umsókn um aðild að Muaythai Sambandi Íslands (MTSÍ)</p>
+
+        <div style="background:#fff;border-radius:8px;box-shadow:0 1px 8px rgba(0,0,0,.06);padding:32px;margin-top:24px;border-top:3px solid #d4a017">
+            <div id="signupIntro" style="font-size:14px;color:#555;line-height:1.7;margin-bottom:24px">
+                <p>Velkomin að sækja um aðild að MTSÍ. Stjórn sambandsins fer yfir umsóknir á reglulegum stjórnarfundum og hefur samband við tengilið.</p>
+                <p style="margin-top:8px;font-size:13px;color:#888">Reitir merktir með <span style="color:#dc3232">*</span> eru skyldubundnir.</p>
+            </div>
+
+            <div id="signupForm">
+                <h3 style="font-size:14px;color:#003897;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;border-bottom:2px solid #f0f0f0;padding-bottom:8px">Upplýsingar um félag</h3>
+                <div class="signup-grid">
+                    <div class="signup-field">
+                        <label>Nafn félags <span style="color:#dc3232">*</span></label>
+                        <input type="text" id="su-clubName" placeholder="t.d. Muay Thai Klúbbur Reykjavíkur" autocomplete="organization">
+                    </div>
+                    <div class="signup-field">
+                        <label>Kennitala</label>
+                        <input type="text" id="su-kt" placeholder="000000-0000" autocomplete="off">
+                    </div>
+                </div>
+                <div class="signup-grid">
+                    <div class="signup-field">
+                        <label>Heimilisfang</label>
+                        <input type="text" id="su-address" placeholder="Götuheiti og númer" autocomplete="street-address">
+                    </div>
+                    <div class="signup-field">
+                        <label>Póstnúmer / Staður</label>
+                        <input type="text" id="su-postnr" placeholder="t.d. 101 Reykjavík" autocomplete="postal-code">
+                    </div>
+                </div>
+                <div class="signup-grid">
+                    <div class="signup-field">
+                        <label>Fjöldi iðkenda (u.þ.b.)</label>
+                        <input type="text" id="su-memberCount" placeholder="t.d. 45" inputmode="numeric">
+                    </div>
+                    <div class="signup-field">
+                        <label>Vefur / Facebook</label>
+                        <input type="text" id="su-website" placeholder="https://..." autocomplete="url">
+                    </div>
+                </div>
+
+                <h3 style="font-size:14px;color:#003897;text-transform:uppercase;letter-spacing:1px;margin:28px 0 16px;border-bottom:2px solid #f0f0f0;padding-bottom:8px">Tengiliður</h3>
+                <div class="signup-grid">
+                    <div class="signup-field">
+                        <label>Nafn tengiliðs <span style="color:#dc3232">*</span></label>
+                        <input type="text" id="su-contactName" placeholder="Fullt nafn" autocomplete="name">
+                    </div>
+                    <div class="signup-field">
+                        <label>Hlutverk</label>
+                        <input type="text" id="su-contactRole" placeholder="t.d. Formaður, þjálfari">
+                    </div>
+                </div>
+                <div class="signup-grid">
+                    <div class="signup-field">
+                        <label>Netfang <span style="color:#dc3232">*</span></label>
+                        <input type="email" id="su-email" placeholder="netfang@felag.is" autocomplete="email">
+                    </div>
+                    <div class="signup-field">
+                        <label>Sími</label>
+                        <input type="tel" id="su-phone" placeholder="000-0000" autocomplete="tel">
+                    </div>
+                </div>
+
+                <h3 style="font-size:14px;color:#003897;text-transform:uppercase;letter-spacing:1px;margin:28px 0 16px;border-bottom:2px solid #f0f0f0;padding-bottom:8px">Annað</h3>
+                <div class="signup-field">
+                    <label>Athugasemd</label>
+                    <textarea id="su-notes" rows="4" placeholder="Aðrar upplýsingar sem þú vilt að stjórn MTSÍ viti um félagið..."></textarea>
+                </div>
+
+                <div id="su-error" style="display:none;background:#fff5f5;border:1px solid #dc3232;color:#dc3232;padding:12px 16px;border-radius:6px;font-size:13px;margin-top:16px"></div>
+
+                <div style="margin-top:28px;display:flex;justify-content:flex-end;gap:12px">
+                    <button type="button" onclick="navigateTo('home')" style="background:#f0f0f0;color:#333;border:none;padding:12px 24px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">Hætta við</button>
+                    <button type="button" id="su-submitBtn" onclick="submitSignup()" style="background:linear-gradient(135deg,#003897,#00245e);color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px"><i class="fas fa-paper-plane"></i> Senda umsókn</button>
+                </div>
+            </div>
+
+            <div id="signupSuccess" style="display:none;text-align:center;padding:40px 20px">
+                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#d4a017,#b8860b);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px"><i class="fas fa-check"></i></div>
+                <h3 style="font-size:22px;color:#003897;margin-bottom:12px">Umsókn móttekin</h3>
+                <p style="font-size:14px;color:#666;line-height:1.7;max-width:480px;margin:0 auto 20px">Takk fyrir umsóknina. Stjórn MTSÍ mun fara yfir hana og hafa samband við þig á næstu dögum. Staðfestingar-tölvupóstur hefur verið sendur á netfangið þitt.</p>
+                <button onclick="navigateTo('home')" style="background:#003897;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">Til baka á forsíðu</button>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
 <!-- ===== PAGE: CONTEST ===== -->
 <div data-page="contestSection" class="page-view">
 <section class="content-section" style="min-height:60vh">
@@ -448,6 +603,7 @@
     <div class="admin-panel-body">
         <div class="admin-tabs" id="adminTabs">
             <button class="admin-tab active" data-tab="tab-hero">Forsíða</button>
+            <button class="admin-tab" data-tab="tab-applications"><i class="fas fa-clipboard-check" style="font-size:11px;margin-right:4px"></i>Umsóknir <span id="adm-appBadge" style="display:none;background:#dc3232;color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700">0</span></button>
             <button class="admin-tab" data-tab="tab-news">Fréttir</button>
             <button class="admin-tab" data-tab="tab-clubs">Félög</button>
             <button class="admin-tab" data-tab="tab-about">Um okkur</button>
@@ -500,6 +656,16 @@
             <div class="admin-field"><label>Fyrirsögn (nota &lt;span&gt; fyrir gull lit)</label><input id="adm-heroTitle" placeholder="Velkomin á heimasíðu <span>MTSÍ</span>"></div>
             <div class="admin-field"><label>Texti</label><textarea id="adm-heroText"></textarea></div>
             <div class="btn-row"><button class="admin-btn admin-btn-primary" onclick="saveHero()"><i class="fas fa-save"></i> Vista allt</button></div>
+        </div>
+
+        <!-- TAB: Applications (federation team signups) -->
+        <div class="admin-tab-content" id="tab-applications">
+            <div id="adm-applicationsContent">
+                <div style="text-align:center;padding:30px;color:#888;font-size:13px">
+                    <i class="fas fa-spinner fa-spin" style="font-size:20px;color:#003897;margin-bottom:10px;display:block"></i>
+                    Hleður umsóknum...
+                </div>
+            </div>
         </div>
 
         <!-- TAB: News -->
@@ -644,6 +810,72 @@
     </div>
 </div>
 
+<!-- ===== APPLICATION DETAIL MODAL (admin) ===== -->
+<div class="ap-modal-overlay" id="apModal" onclick="if(event.target===this)closeApModal()">
+    <div class="ap-modal">
+        <div class="ap-modal-hdr">
+            <div>
+                <h3 id="apModalTitle">Aðildarumsókn</h3>
+                <div class="ap-modal-meta" id="apModalMeta">Móttekið: —</div>
+            </div>
+            <button class="ap-modal-close" onclick="closeApModal()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-section-title">Félag</div>
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field"><label>Nafn félags</label><input type="text" id="ap-clubName"></div>
+                <div class="ap-modal-field"><label>Kennitala</label><input type="text" id="ap-kt"></div>
+                <div class="ap-modal-field"><label>Heimilisfang</label><input type="text" id="ap-address"></div>
+                <div class="ap-modal-field"><label>Póstnúmer / Staður</label><input type="text" id="ap-postnr"></div>
+                <div class="ap-modal-field"><label>Fjöldi iðkenda</label><input type="text" id="ap-memberCount"></div>
+                <div class="ap-modal-field"><label>Vefur</label><input type="text" id="ap-website"></div>
+            </div>
+
+            <div class="ap-modal-section-title">Tengiliður</div>
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field"><label>Nafn</label><input type="text" id="ap-contactName"></div>
+                <div class="ap-modal-field"><label>Hlutverk</label><input type="text" id="ap-contactRole"></div>
+                <div class="ap-modal-field"><label>Netfang</label><input type="email" id="ap-email"></div>
+                <div class="ap-modal-field"><label>Sími</label><input type="tel" id="ap-phone"></div>
+            </div>
+
+            <div class="ap-modal-section-title">Umsókn</div>
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field full"><label>Athugasemd umsækjanda</label><textarea id="ap-notes" rows="3"></textarea></div>
+                <div class="ap-modal-field"><label>Staða</label>
+                    <select id="ap-status">
+                        <option value="pending">Í bið</option>
+                        <option value="contacted">Haft samband</option>
+                        <option value="approved">Samþykkt</option>
+                        <option value="rejected">Hafnað</option>
+                    </select>
+                </div>
+                <div class="ap-modal-field"></div>
+                <div class="ap-modal-field full"><label>Innri athugasemd stjórnar</label><textarea id="ap-adminNotes" rows="3" placeholder="Aðeins sýnilegt stjórnendum"></textarea></div>
+            </div>
+        </div>
+        <div class="ap-modal-footer">
+            <button class="admin-btn admin-btn-danger" onclick="deleteApplication()"><i class="fas fa-trash"></i> Eyða</button>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="closeApModal()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveApplication()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ADMIN TOKEN PROMPT MODAL ===== -->
+<div class="modal-overlay" id="apTokenModal">
+    <div class="modal-box" style="position:relative">
+        <button class="modal-close" onclick="document.getElementById('apTokenModal').classList.remove('active')">&times;</button>
+        <h2><i class="fas fa-key" style="color:#d4a017"></i> API lykill</h2>
+        <p>Sláðu inn API lykilinn (ADMIN_TOKEN) til að nálgast umsóknir.</p>
+        <input type="password" id="apTokenInput" placeholder="API lykill" onkeydown="if(event.key==='Enter')saveAppsToken()">
+        <button class="login-btn" onclick="saveAppsToken()">Vista lykil</button>
+        <p style="margin-top:14px;font-size:11px;color:#888;line-height:1.5">Þessi lykill er settur upp í Netlify undir <code>ADMIN_TOKEN</code> environment variable. Hann er vistaður á þessu tæki.</p>
+    </div>
+</div>
+
 <script>
 // ============================================================
 // DATA STORE - all site content lives here, persisted to localStorage
@@ -697,7 +929,7 @@
                 },
                 {
                     "title": "Skrá nýtt félag",
-                    "link": "#clubsSection"
+                    "link": "#signupSection"
                 },
                 {
                     "title": "Meðlimaskrá",
@@ -1193,6 +1425,8 @@ function attemptLogin() {
         document.getElementById('adminLoginBtn').innerHTML = '<i class="fas fa-cog"></i> Stjórnborð';
         showToast('Velkomin, stjórnandi!', 'success');
         populateAdminFields();
+        // Pre-load applications so the pending-count badge shows up immediately
+        loadApplications(true);
     } else {
         document.getElementById('loginError').style.display = 'block';
     }
@@ -1238,6 +1472,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById(tab.dataset.tab).classList.add('active');
+            // Load applications when its tab is opened
+            if (tab.dataset.tab === 'tab-applications') {
+                loadApplications();
+            }
         });
     });
 });
@@ -1727,6 +1965,392 @@ function showToast(msg, type) {
     t.textContent = msg;
     t.className = 'toast ' + type + ' show';
     setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// PUBLIC SIGNUP FORM (team applies for federation membership)
+// ============================================================
+const SIGNUP_API = '/.netlify/functions/team-signups';
+
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showSignupError(msg) {
+    const el = document.getElementById('su-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function hideSignupError() {
+    document.getElementById('su-error').style.display = 'none';
+}
+
+async function submitSignup() {
+    hideSignupError();
+    const data = {
+        clubName: document.getElementById('su-clubName').value.trim(),
+        kt: document.getElementById('su-kt').value.trim(),
+        address: document.getElementById('su-address').value.trim(),
+        postnr: document.getElementById('su-postnr').value.trim(),
+        memberCount: document.getElementById('su-memberCount').value.trim(),
+        website: document.getElementById('su-website').value.trim(),
+        contactName: document.getElementById('su-contactName').value.trim(),
+        contactRole: document.getElementById('su-contactRole').value.trim(),
+        email: document.getElementById('su-email').value.trim(),
+        phone: document.getElementById('su-phone').value.trim(),
+        notes: document.getElementById('su-notes').value.trim(),
+    };
+
+    // Client-side validation
+    if (!data.clubName) { showSignupError('Vinsamlegast sláðu inn nafn félagsins.'); return; }
+    if (!data.contactName) { showSignupError('Vinsamlegast sláðu inn nafn tengiliðs.'); return; }
+    if (!data.email) { showSignupError('Vinsamlegast sláðu inn netfang.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        showSignupError('Netfangið virðist ekki gilt.'); return;
+    }
+
+    const btn = document.getElementById('su-submitBtn');
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sendi...';
+
+    try {
+        const res = await fetch(SIGNUP_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'submit', data })
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.ok) {
+            throw new Error(result.error || 'Tókst ekki að senda umsókn.');
+        }
+        // Success
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('signupIntro').style.display = 'none';
+        document.getElementById('signupSuccess').style.display = 'block';
+        // Clear fields so it's clean if they come back
+        ['su-clubName','su-kt','su-address','su-postnr','su-memberCount','su-website',
+         'su-contactName','su-contactRole','su-email','su-phone','su-notes'].forEach(id => {
+            const e = document.getElementById(id); if (e) e.value = '';
+        });
+    } catch (e) {
+        showSignupError(e.message || 'Villa kom upp. Reyndu aftur.');
+        btn.disabled = false;
+        btn.innerHTML = origText;
+    }
+}
+
+// Reset signup form view whenever user navigates to it fresh
+const _origNavigateTo = navigateTo;
+navigateTo = function(pageId) {
+    _origNavigateTo(pageId);
+    if (pageId === 'signupSection') {
+        const form = document.getElementById('signupForm');
+        const intro = document.getElementById('signupIntro');
+        const ok = document.getElementById('signupSuccess');
+        if (form && ok) {
+            form.style.display = '';
+            if (intro) intro.style.display = '';
+            ok.style.display = 'none';
+            hideSignupError();
+            const btn = document.getElementById('su-submitBtn');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Senda umsókn'; }
+        }
+    }
+};
+
+// ============================================================
+// ADMIN APPLICATIONS PANEL (federation team signups overview)
+// ============================================================
+let apList = [];
+let apSearch = '';
+let apFilter = 'all';
+let apEditId = null;
+
+function getApsToken() {
+    return localStorage.getItem('mtsi_apps_token') || '';
+}
+
+function saveAppsToken() {
+    const v = document.getElementById('apTokenInput').value.trim();
+    if (!v) { return; }
+    localStorage.setItem('mtsi_apps_token', v);
+    document.getElementById('apTokenModal').classList.remove('active');
+    document.getElementById('apTokenInput').value = '';
+    loadApplications();
+}
+
+function promptAppsToken() {
+    document.getElementById('apTokenModal').classList.add('active');
+    setTimeout(() => document.getElementById('apTokenInput').focus(), 50);
+}
+
+async function loadApplications(silent) {
+    const token = getApsToken();
+    if (!token) {
+        document.getElementById('adm-applicationsContent').innerHTML = `
+            <div class="ap-empty" style="padding:32px 20px">
+                <i class="fas fa-key" style="font-size:28px;color:#d4a017;margin-bottom:12px;display:block"></i>
+                <p style="margin-bottom:14px">Sláðu inn API lykilinn til að sjá umsóknir.</p>
+                <button class="admin-btn admin-btn-primary" onclick="promptAppsToken()"><i class="fas fa-key"></i> Slá inn lykil</button>
+            </div>`;
+        return;
+    }
+    try {
+        const res = await fetch(SIGNUP_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'list', token })
+        });
+        if (res.status === 401) {
+            localStorage.removeItem('mtsi_apps_token');
+            if (!silent) showToast('API lykill er rangur', 'error');
+            promptAppsToken();
+            return;
+        }
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(result.error || 'Tókst ekki að hlaða.');
+        apList = Array.isArray(result.list) ? result.list : [];
+        renderApplications();
+        updateAppBadge();
+    } catch (e) {
+        document.getElementById('adm-applicationsContent').innerHTML = `
+            <div class="ap-empty" style="color:#dc3232">
+                <i class="fas fa-exclamation-triangle" style="font-size:24px;display:block;margin-bottom:10px"></i>
+                ${esc(e.message || 'Villa')}
+                <div style="margin-top:14px"><button class="admin-btn admin-btn-secondary" onclick="loadApplications()">Reyna aftur</button></div>
+            </div>`;
+    }
+}
+
+function updateAppBadge() {
+    const pending = apList.filter(r => r.status === 'pending').length;
+    const badge = document.getElementById('adm-appBadge');
+    if (!badge) return;
+    if (pending > 0) {
+        badge.textContent = pending;
+        badge.style.display = 'inline-block';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function statusLabel(s) {
+    return { pending:'Í bið', contacted:'Haft samband', approved:'Samþykkt', rejected:'Hafnað' }[s] || s;
+}
+
+function renderApplications() {
+    const filtered = apList.filter(r => {
+        const q = apSearch.toLowerCase();
+        const matchQ = !q ||
+            (r.clubName||'').toLowerCase().includes(q) ||
+            (r.contactName||'').toLowerCase().includes(q) ||
+            (r.email||'').toLowerCase().includes(q) ||
+            (r.kt||'').toLowerCase().includes(q) ||
+            (r.phone||'').toLowerCase().includes(q);
+        const matchF = apFilter === 'all' || r.status === apFilter;
+        return matchQ && matchF;
+    });
+
+    const total = apList.length;
+    const totalPending  = apList.filter(r => r.status === 'pending').length;
+    const totalApproved = apList.filter(r => r.status === 'approved').length;
+    const totalRejected = apList.filter(r => r.status === 'rejected').length;
+
+    document.getElementById('adm-applicationsContent').innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap">
+            <div>
+                <h4 style="color:#003897;font-size:16px;margin-bottom:2px"><i class="fas fa-clipboard-check"></i> Aðildarumsóknir</h4>
+                <div style="font-size:11px;color:#888">${total} umsóknir samtals</div>
+            </div>
+            <div style="display:flex;gap:6px">
+                <button class="admin-btn admin-btn-secondary" onclick="exportApplicationsCsv()" title="Flytja út CSV"><i class="fas fa-download"></i> CSV</button>
+                <button class="admin-btn admin-btn-secondary" onclick="loadApplications()" title="Endurnýja"><i class="fas fa-sync"></i></button>
+            </div>
+        </div>
+
+        <div class="ap-stat-grid">
+            <div class="ap-stat"><div class="ap-stat-label">Samtals</div><div class="ap-stat-value">${total}</div></div>
+            <div class="ap-stat"><div class="ap-stat-label">Í bið</div><div class="ap-stat-value pending">${totalPending}</div></div>
+            <div class="ap-stat"><div class="ap-stat-label">Samþykktar</div><div class="ap-stat-value approved">${totalApproved}</div></div>
+            <div class="ap-stat"><div class="ap-stat-label">Hafnað</div><div class="ap-stat-value rejected">${totalRejected}</div></div>
+        </div>
+
+        <div class="ap-toolbar">
+            <input class="ap-search" id="ap-searchInput" placeholder="🔍 Leita að félagi, tengilið, netfangi..."
+                value="${esc(apSearch)}" oninput="apSearch=this.value;renderApplications();document.getElementById('ap-searchInput').focus()">
+        </div>
+        <div class="ap-filter-row">
+            ${[['all','Allar'],['pending','Í bið'],['contacted','Haft samband'],['approved','Samþykktar'],['rejected','Hafnað']].map(([v,l]) =>
+                `<button class="ap-filter${apFilter===v?' active':''}" onclick="apFilter='${v}';renderApplications()">${l}</button>`
+            ).join('')}
+        </div>
+
+        ${filtered.length === 0 ? `
+            <div class="ap-empty">
+                ${apSearch || apFilter !== 'all' ? 'Engar umsóknir fundust með þessari leit.' : 'Engar umsóknir hafa borist enn.'}
+            </div>
+        ` : `
+            <div class="ap-table-wrap">
+            <table class="ap-table">
+                <thead><tr>
+                    <th>Félag</th>
+                    <th>Tengiliður</th>
+                    <th>Netfang</th>
+                    <th>Iðkendur</th>
+                    <th>Móttekið</th>
+                    <th>Staða</th>
+                </tr></thead>
+                <tbody>
+                    ${filtered.map(r => `
+                        <tr onclick="openApModal('${r.id}')">
+                            <td style="font-weight:600;color:#1a1a1a">
+                                ${esc(r.clubName||'—')}
+                                ${r.kt ? `<div style="font-family:monospace;font-size:11px;color:#aaa;margin-top:2px">${esc(r.kt)}</div>` : ''}
+                            </td>
+                            <td>
+                                ${esc(r.contactName||'—')}
+                                ${r.contactRole ? `<div style="font-size:11px;color:#888">${esc(r.contactRole)}</div>` : ''}
+                            </td>
+                            <td style="color:#003897">${esc(r.email||'—')}</td>
+                            <td>${esc(r.memberCount||'—')}</td>
+                            <td style="font-size:12px;color:#888">${formatDate(r.submittedAt)}</td>
+                            <td><span class="ap-tag ${r.status||'pending'}">${statusLabel(r.status||'pending')}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            </div>
+        `}
+    `;
+}
+
+function formatDate(iso) {
+    if (!iso) return '—';
+    try {
+        const d = new Date(iso);
+        const dd = String(d.getDate()).padStart(2,'0');
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const yy = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mi = String(d.getMinutes()).padStart(2,'0');
+        return `${dd}.${mm}.${yy} ${hh}:${mi}`;
+    } catch(e) { return iso; }
+}
+
+function openApModal(id) {
+    const r = apList.find(x => x.id === id);
+    if (!r) return;
+    apEditId = id;
+    document.getElementById('apModalTitle').textContent = r.clubName || 'Umsókn';
+    document.getElementById('apModalMeta').textContent = 'Móttekið: ' + formatDate(r.submittedAt) +
+        (r.updatedAt ? ' — Síðast breytt: ' + formatDate(r.updatedAt) : '');
+    document.getElementById('ap-clubName').value     = r.clubName     || '';
+    document.getElementById('ap-kt').value           = r.kt           || '';
+    document.getElementById('ap-address').value      = r.address      || '';
+    document.getElementById('ap-postnr').value       = r.postnr       || '';
+    document.getElementById('ap-memberCount').value  = r.memberCount  || '';
+    document.getElementById('ap-website').value      = r.website      || '';
+    document.getElementById('ap-contactName').value  = r.contactName  || '';
+    document.getElementById('ap-contactRole').value  = r.contactRole  || '';
+    document.getElementById('ap-email').value        = r.email        || '';
+    document.getElementById('ap-phone').value        = r.phone        || '';
+    document.getElementById('ap-notes').value        = r.notes        || '';
+    document.getElementById('ap-status').value       = r.status       || 'pending';
+    document.getElementById('ap-adminNotes').value   = r.adminNotes   || '';
+    document.getElementById('apModal').classList.add('open');
+}
+
+function closeApModal() {
+    document.getElementById('apModal').classList.remove('open');
+    apEditId = null;
+}
+
+async function saveApplication() {
+    if (!apEditId) return;
+    const patch = {
+        clubName:     document.getElementById('ap-clubName').value.trim(),
+        kt:           document.getElementById('ap-kt').value.trim(),
+        address:      document.getElementById('ap-address').value.trim(),
+        postnr:       document.getElementById('ap-postnr').value.trim(),
+        memberCount:  document.getElementById('ap-memberCount').value.trim(),
+        website:      document.getElementById('ap-website').value.trim(),
+        contactName:  document.getElementById('ap-contactName').value.trim(),
+        contactRole:  document.getElementById('ap-contactRole').value.trim(),
+        email:        document.getElementById('ap-email').value.trim(),
+        phone:        document.getElementById('ap-phone').value.trim(),
+        notes:        document.getElementById('ap-notes').value.trim(),
+        status:       document.getElementById('ap-status').value,
+        adminNotes:   document.getElementById('ap-adminNotes').value.trim(),
+    };
+    try {
+        const res = await fetch(SIGNUP_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'update', token: getApsToken(), id: apEditId, patch })
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.ok) throw new Error(result.error || 'Tókst ekki að vista.');
+        // Update local list
+        const idx = apList.findIndex(r => r.id === apEditId);
+        if (idx !== -1) apList[idx] = result.rec;
+        closeApModal();
+        renderApplications();
+        updateAppBadge();
+        showToast('Umsókn uppfærð', 'success');
+    } catch (e) {
+        showToast(e.message || 'Villa við vistun', 'error');
+    }
+}
+
+async function deleteApplication() {
+    if (!apEditId) return;
+    if (!confirm('Eyða þessari umsókn varanlega? Þessi aðgerð er óafturkræf.')) return;
+    try {
+        const res = await fetch(SIGNUP_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', token: getApsToken(), id: apEditId })
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.ok) throw new Error(result.error || 'Tókst ekki að eyða.');
+        apList = apList.filter(r => r.id !== apEditId);
+        closeApModal();
+        renderApplications();
+        updateAppBadge();
+        showToast('Umsókn eytt', 'success');
+    } catch (e) {
+        showToast(e.message || 'Villa við að eyða', 'error');
+    }
+}
+
+function exportApplicationsCsv() {
+    if (apList.length === 0) { showToast('Engin gögn til að flytja út', 'error'); return; }
+    const headers = ['Félag','Kennitala','Heimilisfang','Póstnúmer','Iðkendur','Vefur',
+                     'Tengiliður','Hlutverk','Netfang','Sími','Athugasemd','Staða',
+                     'Innri athugasemd','Móttekið','Síðast breytt'];
+    const rows = apList.map(r => [
+        r.clubName, r.kt, r.address, r.postnr, r.memberCount, r.website,
+        r.contactName, r.contactRole, r.email, r.phone, r.notes,
+        statusLabel(r.status||'pending'), r.adminNotes,
+        r.submittedAt, r.updatedAt || ''
+    ]);
+    const csv = [headers, ...rows].map(row =>
+        row.map(cell => {
+            const s = String(cell == null ? '' : cell);
+            return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+        }).join(',')
+    ).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mtsi-umsoknir-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
 }
 </script>
 
