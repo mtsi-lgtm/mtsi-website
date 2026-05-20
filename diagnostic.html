@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<title>MTSÍ — Diagnostic</title>
+<style>
+body { font-family: -apple-system, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; }
+h1 { color: #003897; font-size: 20px; }
+.row { background: #f8f9fb; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 12px 0; }
+.row h3 { margin: 0 0 10px; font-size: 14px; color: #003897; }
+button { background: #003897; color: #fff; border: none; padding: 9px 18px; border-radius: 5px; font-size: 13px; cursor: pointer; margin-right: 6px; }
+button.gold { background: #d4a017; }
+button.red  { background: #dc3232; }
+input { padding: 8px 11px; border: 1.5px solid #ddd; border-radius: 5px; font-size: 13px; width: 320px; }
+pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; line-height: 1.5; max-height: 400px; }
+.ok { color: #2d7d36; font-weight: 700; }
+.bad { color: #dc3232; font-weight: 700; }
+.note { font-size: 12px; color: #888; line-height: 1.5; margin-top: 6px; }
+</style>
+</head>
+<body>
+<h1>🩺 MTSÍ Diagnostic</h1>
+<p style="font-size: 13px; color: #666">Test the <code>team-signups</code> Netlify function and see the raw error.</p>
+
+<div class="row">
+    <h3>1. Test public submit (no token needed)</h3>
+    <button onclick="testSubmit()">Senda tilraunaumsókn</button>
+    <div class="note">Sends a dummy application. If this works, the function + Blob storage + env vars are all healthy.</div>
+</div>
+
+<div class="row">
+    <h3>2. Test admin list (token required)</h3>
+    <input id="adminToken" placeholder="ADMIN_TOKEN value">
+    <button onclick="testList()">Sækja umsóknir</button>
+    <div class="note">Paste your ADMIN_TOKEN value. If it works, you'll see the list. If not, the error tells us why.</div>
+</div>
+
+<div class="row">
+    <h3>3. Test signup-email function</h3>
+    <button onclick="testEmail()">Senda tilraunapóst</button>
+    <div class="note">Tests that signup-email runs. If RESEND_API_KEY isn't set yet, it'll respond with "skipped" — that's fine.</div>
+</div>
+
+<h3 style="margin-top: 30px">Output</h3>
+<pre id="out">Bíður eftir prófi...</pre>
+
+<script>
+const out = document.getElementById('out');
+function log(label, data, isError) {
+    const cls = isError ? 'bad' : 'ok';
+    const time = new Date().toLocaleTimeString('is-IS');
+    const lines = [
+        `[${time}] <span class="${cls}">${label}</span>`,
+        typeof data === 'string' ? data : JSON.stringify(data, null, 2),
+        '─'.repeat(60),
+        ''
+    ];
+    out.innerHTML = lines.join('\n') + out.innerHTML;
+}
+
+async function call(action, body = {}) {
+    const res = await fetch('/.netlify/functions/team-signups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...body })
+    });
+    let data;
+    try { data = await res.json(); } catch (e) { data = { _parseError: e.message, _text: await res.text().catch(()=> '') }; }
+    return { status: res.status, ok: res.ok, data };
+}
+
+async function testSubmit() {
+    log('TEST 1: submit', 'Sending...');
+    try {
+        const r = await call('submit', { data: {
+            clubName: 'TEST — eyða mér',
+            contactName: 'Test Testsson',
+            email: 'test@example.com',
+            kt: '000000-0000',
+            notes: 'Þetta er sjálfvirk prófun — má eyða.'
+        }});
+        log(`TEST 1 result (HTTP ${r.status})`, r.data, !r.ok);
+    } catch (e) { log('TEST 1 EXCEPTION', e.message, true); }
+}
+
+async function testList() {
+    const token = document.getElementById('adminToken').value.trim();
+    if (!token) { log('TEST 2', 'Vinsamlegast sláðu inn ADMIN_TOKEN', true); return; }
+    log('TEST 2: list', 'Calling with token (' + token.length + ' chars)...');
+    try {
+        const r = await call('list', { token });
+        log(`TEST 2 result (HTTP ${r.status})`, r.data, !r.ok);
+    } catch (e) { log('TEST 2 EXCEPTION', e.message, true); }
+}
+
+async function testEmail() {
+    log('TEST 3: signup-email', 'Sending dummy record...');
+    try {
+        const res = await fetch('/.netlify/functions/signup-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rec: {
+                clubName: 'TEST', contactName: 'Test', email: 'test@example.com'
+            }})
+        });
+        const data = await res.json().catch(() => ({}));
+        log(`TEST 3 result (HTTP ${res.status})`, data, !res.ok);
+    } catch (e) { log('TEST 3 EXCEPTION', e.message, true); }
+}
+</script>
+</body>
+</html>
