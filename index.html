@@ -1625,7 +1625,12 @@
     /* DD_END */
 
 /* --- GitHub Sync --- */
-    async function pushToGitHub() {
+    let _pushChain = Promise.resolve();
+    function pushToGitHub() {
+      _pushChain = _pushChain.then(() => _pushToGitHub(1)).catch(() => {});
+      return _pushChain;
+    }
+    async function _pushToGitHub(retriesLeft) {
       try {
         const fnUrl = '/.netlify/functions/github-sync';
         const getRes = await fetch(fnUrl, {
@@ -1656,10 +1661,13 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'put', content: b64, sha: fileData.sha, message: 'Update site via admin' })
         });
+        if (putRes.status === 409 && retriesLeft > 0) {
+          return _pushToGitHub(retriesLeft - 1);
+        }
         if (!putRes.ok) throw new Error('GitHub PUT failed: ' + putRes.status);
-        alert('Published successfully!');
+        showToast('Vistað! Breytingin birtist á vefnum eftir ca. 1 mínútu.', 'success');
       } catch (e) {
-        alert('Publish failed: ' + e.message);
+        showToast('Villa við vistun: ' + e.message + ' – reyndu aftur', 'error');
       }
     }
 
@@ -1904,6 +1912,7 @@ function attemptLogin() {
     const p = document.getElementById('loginPass').value;
     if (u === siteData.credentials.user && p === siteData.credentials.pass) {
         isAdmin = true;
+        try { sessionStorage.setItem('mtsi_admin', '1'); } catch(e) {}
         closeLogin();
         document.getElementById('adminToolbar').classList.add('active');
         document.getElementById('adminLoginBtn').classList.add('logged-in');
@@ -1919,6 +1928,7 @@ function attemptLogin() {
 
 function adminLogout() {
     isAdmin = false;
+    try { sessionStorage.removeItem('mtsi_admin'); } catch(e) {}
     document.getElementById('adminToolbar').classList.remove('active');
     document.getElementById('adminPanel').classList.remove('open');
     document.getElementById('adminLoginBtn').classList.remove('logged-in');
@@ -1951,6 +1961,17 @@ function toggleAdminPanel() {
 document.addEventListener('DOMContentLoaded', () => {
     renderAll();
     checkInitialRoute();
+    // Restore admin session across reloads (cleared when the tab closes or on logout)
+    try {
+        if (sessionStorage.getItem('mtsi_admin') === '1') {
+            isAdmin = true;
+            document.getElementById('adminToolbar').classList.add('active');
+            document.getElementById('adminLoginBtn').classList.add('logged-in');
+            document.getElementById('adminLoginBtn').innerHTML = '<i class="fas fa-cog"></i> Stjórnborð';
+            populateAdminFields();
+            loadApplications(true);
+        }
+    } catch(e) {}
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
