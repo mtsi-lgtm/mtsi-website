@@ -2584,8 +2584,13 @@ let apSearch = '';
 let apFilter = 'all';
 let apEditId = null;
 
+// Built-in admin API key — used automatically so admins don't have to
+// enter it on every login. Can still be overridden via the key modal
+// (stored in localStorage) if the key on Netlify is ever rotated.
+const DEFAULT_APPS_TOKEN = 'mtsi2026-2026-2026';
+
 function getApsToken() {
-    return localStorage.getItem('mtsi_apps_token') || '';
+    return localStorage.getItem('mtsi_apps_token') || DEFAULT_APPS_TOKEN;
 }
 
 function saveAppsToken() {
