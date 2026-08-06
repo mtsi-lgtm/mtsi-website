@@ -3171,6 +3171,8 @@ navigateTo = function(pageId) {
 let apList = [];
 let apSearch = '';
 let apFilter = 'all';
+let apCategory = 'membership'; // 'membership' | 'events'
+function isEventReq(r) { return (r.clubName || '').indexOf('[Viðburður]') === 0; }
 let apEditId = null;
 
 // Built-in admin API key — used automatically so admins don't have to
@@ -3262,7 +3264,8 @@ function statusLabel(s) {
 }
 
 function renderApplications() {
-    const filtered = apList.filter(r => {
+    const catList = apList.filter(r => apCategory === 'events' ? isEventReq(r) : !isEventReq(r));
+    const filtered = catList.filter(r => {
         const q = apSearch.toLowerCase();
         const matchQ = !q ||
             (r.clubName||'').toLowerCase().includes(q) ||
@@ -3274,16 +3277,24 @@ function renderApplications() {
         return matchQ && matchF;
     });
 
-    const total = apList.length;
-    const totalPending  = apList.filter(r => r.status === 'pending').length;
-    const totalApproved = apList.filter(r => r.status === 'approved').length;
-    const totalRejected = apList.filter(r => r.status === 'rejected').length;
+    const total = catList.length;
+    const totalPending  = catList.filter(r => r.status === 'pending').length;
+    const totalApproved = catList.filter(r => r.status === 'approved').length;
+    const totalRejected = catList.filter(r => r.status === 'rejected').length;
+    const isEvCat = apCategory === 'events';
 
     document.getElementById('adm-applicationsContent').innerHTML = `
+        <div class="admin-field" style="margin-bottom:16px">
+            <label>Tegund umsókna</label>
+            <select onchange="apCategory=this.value;apFilter='all';apSearch='';renderApplications()" style="cursor:pointer">
+                <option value="membership"${apCategory === 'membership' ? ' selected' : ''}>Aðildarumsóknir</option>
+                <option value="events"${apCategory === 'events' ? ' selected' : ''}>Umsóknir fyrir mót & viðburði</option>
+            </select>
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap">
             <div>
-                <h4 style="color:#003897;font-size:16px;margin-bottom:2px"><i class="fas fa-clipboard-check"></i> Aðildarumsóknir</h4>
-                <div style="font-size:11px;color:#888">${total} umsóknir samtals</div>
+                <h4 style="color:#003897;font-size:16px;margin-bottom:2px"><i class="fas ${isEvCat ? 'fa-calendar-plus' : 'fa-clipboard-check'}"></i> ${isEvCat ? 'Umsóknir fyrir mót & viðburði' : 'Aðildarumsóknir'}</h4>
+                <div style="font-size:11px;color:#888">${total} ${isEvCat ? 'beiðnir' : 'umsóknir'} samtals</div>
             </div>
             <div style="display:flex;gap:6px">
                 <button class="admin-btn admin-btn-secondary" onclick="exportApplicationsCsv()" title="Flytja út CSV"><i class="fas fa-download"></i> CSV</button>
@@ -3299,7 +3310,7 @@ function renderApplications() {
         </div>
 
         <div class="ap-toolbar">
-            <input class="ap-search" id="ap-searchInput" placeholder="🔍 Leita að félagi, tengilið, netfangi..."
+            <input class="ap-search" id="ap-searchInput" placeholder="🔍 ${isEvCat ? 'Leita að viðburði, tengilið, netfangi...' : 'Leita að félagi, tengilið, netfangi...'}"
                 value="${esc(apSearch)}" oninput="apSearch=this.value;renderApplications();document.getElementById('ap-searchInput').focus()">
         </div>
         <div class="ap-filter-row">
@@ -3310,16 +3321,16 @@ function renderApplications() {
 
         ${filtered.length === 0 ? `
             <div class="ap-empty">
-                ${apSearch || apFilter !== 'all' ? 'Engar umsóknir fundust með þessari leit.' : 'Engar umsóknir hafa borist enn.'}
+                ${apSearch || apFilter !== 'all' ? 'Ekkert fannst með þessari leit.' : (isEvCat ? 'Engar viðburðabeiðnir hafa borist enn.' : 'Engar umsóknir hafa borist enn.')}
             </div>
         ` : `
             <div class="ap-table-wrap">
             <table class="ap-table">
                 <thead><tr>
-                    <th>Félag</th>
+                    <th>${isEvCat ? 'Viðburður' : 'Félag'}</th>
                     <th>Tengiliður</th>
                     <th>Netfang</th>
-                    <th>Iðkendur</th>
+                    <th>${isEvCat ? 'Staðsetning' : 'Iðkendur'}</th>
                     <th>Móttekið</th>
                     <th>Staða</th>
                 </tr></thead>
@@ -3327,7 +3338,7 @@ function renderApplications() {
                     ${filtered.map(r => `
                         <tr onclick="openApModal('${r.id}')">
                             <td style="font-weight:600;color:#1a1a1a">
-                                ${esc(r.clubName||'—')}
+                                ${esc(isEvCat ? (r.clubName||'—').replace(/^\[Viðburður\]\s*/, '') : (r.clubName||'—'))}
                                 ${r.kt ? `<div style="font-family:monospace;font-size:11px;color:#aaa;margin-top:2px">${esc(r.kt)}</div>` : ''}
                             </td>
                             <td>
@@ -3335,7 +3346,7 @@ function renderApplications() {
                                 ${r.contactRole ? `<div style="font-size:11px;color:#888">${esc(r.contactRole)}</div>` : ''}
                             </td>
                             <td style="color:#003897">${esc(r.email||'—')}</td>
-                            <td>${esc(r.memberCount||'—')}</td>
+                            <td>${esc(isEvCat ? (r.address||'—') : (r.memberCount||'—'))}</td>
                             <td style="font-size:12px;color:#888">${formatDate(r.submittedAt)}</td>
                             <td><span class="ap-tag ${r.status||'pending'}">${statusLabel(r.status||'pending')}</span></td>
                         </tr>
