@@ -1392,20 +1392,6 @@
                 <button class="admin-btn admin-btn-gold" onclick="addEventForm()"><i class="fas fa-plus"></i> Nýr viðburður</button>
             </div>
             <div id="eventsAdminList"></div>
-            <div id="eventFormArea" style="display:none">
-                <h4 style="margin-bottom:12px;color:#003897" id="eventFormLabel">Nýr viðburður</h4>
-                <div class="admin-field"><label>Titill</label><input id="adm-eventTitle"></div>
-                <div class="admin-field"><label>Dagsetning</label><input id="adm-eventDate" type="date"></div>
-                <div class="admin-field"><label>Tími (valfrjálst)</label><input id="adm-eventTime" type="time"></div>
-                <div class="admin-field"><label>Staðsetning</label><input id="adm-eventLocation"></div>
-                <div class="admin-field"><label>Tegund</label><select id="adm-eventType"><option value="mot">Mót</option><option value="namskeid">Námskeið</option><option value="annad">Annað</option></select></div>
-                <div class="admin-field"><label>Lýsing (valfrjálst)</label><textarea id="adm-eventDesc"></textarea></div>
-                <input type="hidden" id="adm-eventEditIdx" value="-1">
-                <div class="btn-row">
-                    <button class="admin-btn admin-btn-primary" onclick="saveEventItem()"><i class="fas fa-save"></i> Vista</button>
-                    <button class="admin-btn admin-btn-secondary" onclick="cancelEventForm()">Hætta við</button>
-                </div>
-            </div>
         </div>
 
         <!-- TAB: Clubs -->
@@ -1589,6 +1575,37 @@
                 <button class="admin-btn admin-btn-gold" id="apToCalendarBtn" style="display:none" onclick="apAddToCalendar()"><i class="fas fa-calendar-plus"></i> Setja á dagatal</button>
                 <button class="admin-btn admin-btn-secondary" onclick="closeApModal()">Hætta við</button>
                 <button class="admin-btn admin-btn-primary" onclick="saveApplication()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== EVENT FORM MODAL ===== -->
+<div class="ap-modal-overlay" id="eventFormModal" onclick="if(event.target===this)cancelEventForm()">
+    <div class="ap-modal" style="max-width:520px">
+        <div class="ap-modal-header">
+            <div>
+                <h3 id="eventFormLabel">Nýr viðburður</h3>
+                <div class="ap-modal-meta">Birtist á keppnisdagatalinu þegar vistað er</div>
+            </div>
+            <button class="ap-modal-close" onclick="cancelEventForm()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field full"><label>Titill</label><input type="text" id="adm-eventTitle"></div>
+                <div class="ap-modal-field"><label>Dagsetning</label><input type="date" id="adm-eventDate"></div>
+                <div class="ap-modal-field"><label>Tími (valfrjálst)</label><input type="time" id="adm-eventTime"></div>
+                <div class="ap-modal-field"><label>Staðsetning</label><input type="text" id="adm-eventLocation"></div>
+                <div class="ap-modal-field"><label>Tegund</label><select id="adm-eventType"><option value="mot">Mót</option><option value="namskeid">Námskeið</option><option value="annad">Annað</option></select></div>
+                <div class="ap-modal-field full"><label>Lýsing (valfrjálst)</label><textarea id="adm-eventDesc" rows="3"></textarea></div>
+            </div>
+            <input type="hidden" id="adm-eventEditIdx" value="-1">
+        </div>
+        <div class="ap-modal-footer">
+            <div></div>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="cancelEventForm()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveEventItem()"><i class="fas fa-save"></i> Vista</button>
             </div>
         </div>
     </div>
@@ -2243,7 +2260,7 @@ function addEventForm() {
     document.getElementById('adm-eventType').value = 'mot';
     document.getElementById('adm-eventDesc').value = '';
     document.getElementById('adm-eventEditIdx').value = '-1';
-    document.getElementById('eventFormArea').style.display = 'block';
+    document.getElementById('eventFormModal').classList.add('open');
 }
 function editEvent(i) {
     const ev = siteData.events[i];
@@ -2255,7 +2272,7 @@ function editEvent(i) {
     document.getElementById('adm-eventType').value = ev.type || 'annad';
     document.getElementById('adm-eventDesc').value = ev.desc || '';
     document.getElementById('adm-eventEditIdx').value = String(i);
-    document.getElementById('eventFormArea').style.display = 'block';
+    document.getElementById('eventFormModal').classList.add('open');
 }
 function deleteEvent(i) {
     if (!confirm('Eyða þessum viðburði?')) return;
@@ -2280,7 +2297,7 @@ function saveEventItem() {
     calCursor = new Date(item.date + 'T12:00:00');
     saveData(); renderCalendar(); renderEventsAdmin(); cancelEventForm(); showToast('Viðburður vistaður!', 'success');
 }
-function cancelEventForm() { document.getElementById('eventFormArea').style.display = 'none'; }
+function cancelEventForm() { document.getElementById('eventFormModal').classList.remove('open'); }
 
 // On page load, check hash
 function checkInitialRoute() {
