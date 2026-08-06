@@ -1533,8 +1533,25 @@
             <button class="ap-modal-close" onclick="closeApModal()">&times;</button>
         </div>
         <div class="ap-modal-body">
-            <div class="ap-modal-section-title">Félag</div>
-            <div class="ap-modal-grid">
+            <div class="ap-modal-section-title" id="apSecEventTitle" style="display:none">Viðburður</div>
+            <div class="ap-modal-grid" id="apSecEventGrid" style="display:none">
+                <div class="ap-modal-field"><label>Nafn viðburðar</label><input type="text" id="ap-evTitle"></div>
+                <div class="ap-modal-field"><label>Tegund</label>
+                    <select id="ap-evType">
+                        <option value="mot">Mót</option>
+                        <option value="namskeid">Námskeið</option>
+                        <option value="annad">Annað</option>
+                    </select>
+                </div>
+                <div class="ap-modal-field"><label>Dagsetning</label><input type="date" id="ap-evDate"></div>
+                <div class="ap-modal-field"><label>Tími</label><input type="time" id="ap-evTime"></div>
+                <div class="ap-modal-field"><label>Staðsetning</label><input type="text" id="ap-evLocation"></div>
+                <div class="ap-modal-field"><label>Aðildarfélag</label><input type="text" id="ap-evClub"></div>
+                <div class="ap-modal-field full"><label>Lýsing</label><textarea id="ap-evDesc" rows="3"></textarea></div>
+            </div>
+
+            <div class="ap-modal-section-title" id="apSecClubTitle">Félag</div>
+            <div class="ap-modal-grid" id="apSecClubGrid">
                 <div class="ap-modal-field"><label>Nafn félags</label><input type="text" id="ap-clubName"></div>
                 <div class="ap-modal-field"><label>Kennitala</label><input type="text" id="ap-kt"></div>
                 <div class="ap-modal-field"><label>Heimilisfang</label><input type="text" id="ap-address"></div>
@@ -1553,7 +1570,7 @@
 
             <div class="ap-modal-section-title">Umsókn</div>
             <div class="ap-modal-grid">
-                <div class="ap-modal-field full"><label>Athugasemd umsækjanda</label><textarea id="ap-notes" rows="3"></textarea></div>
+                <div class="ap-modal-field full" id="apNotesField"><label>Athugasemd umsækjanda</label><textarea id="ap-notes" rows="3"></textarea></div>
                 <div class="ap-modal-field"><label>Staða</label>
                     <select id="ap-status">
                         <option value="pending">Í bið</option>
@@ -3117,8 +3134,7 @@ async function submitEventSignup() {
         email: email,
         phone: phone,
         address: location,
-        notes: 'Félag: ' + club + '\nTegund: ' + type + '\nDagsetning: ' + date + '\nTími: ' + time +
-               '\nStaðsetning: ' + location + (desc ? '\n\n' + desc : '')
+        notes: serializeEventNotes({ club: club, type: type, date: date, time: time, location: location, desc: desc })
     };
     const btn = document.getElementById('ev-submitBtn');
     const origText = btn.innerHTML;
@@ -3173,6 +3189,24 @@ let apSearch = '';
 let apFilter = 'all';
 let apCategory = 'membership'; // 'membership' | 'events'
 function isEventReq(r) { return (r.clubName || '').indexOf('[Viðburður]') === 0; }
+function parseEventNotes(notes) {
+    const map = { 'Félag':'club', 'Tegund':'type', 'Dagsetning':'date', 'Tími':'time', 'Staðsetning':'location', 'Lýsing':'desc' };
+    const out = {};
+    let t = String(notes || '');
+    Object.keys(map).forEach(k => { t = t.split(k + ':').join('\n' + k + ':'); });
+    t.split('\n').forEach(line => {
+        const i = line.indexOf(':');
+        if (i === -1) return;
+        const k = line.slice(0, i).trim();
+        if (map[k]) out[map[k]] = line.slice(i + 1).replace(/\|\s*$/, '').trim();
+    });
+    return out;
+}
+function serializeEventNotes(ev) {
+    return 'Félag: ' + (ev.club || '') + ' | Tegund: ' + (ev.type || '') + ' | Dagsetning: ' + (ev.date || '') +
+           ' | Tími: ' + (ev.time || '') + ' | Staðsetning: ' + (ev.location || '') +
+           (ev.desc ? ' | Lýsing: ' + ev.desc : '');
+}
 let apEditId = null;
 
 // Built-in admin API key — used automatically so admins don't have to
@@ -3391,8 +3425,24 @@ function openApModal(id) {
     document.getElementById('ap-notes').value        = r.notes        || '';
     document.getElementById('ap-status').value       = r.status       || 'pending';
     document.getElementById('ap-adminNotes').value   = r.adminNotes   || '';
-    const evBtn = document.getElementById('apToCalendarBtn');
-    if (evBtn) evBtn.style.display = (r.clubName || '').indexOf('[Viðburður]') === 0 ? '' : 'none';
+    const isEv = isEventReq(r);
+    document.getElementById('apToCalendarBtn').style.display = isEv ? '' : 'none';
+    document.getElementById('apSecEventTitle').style.display = isEv ? '' : 'none';
+    document.getElementById('apSecEventGrid').style.display = isEv ? '' : 'none';
+    document.getElementById('apSecClubTitle').style.display = isEv ? 'none' : '';
+    document.getElementById('apSecClubGrid').style.display = isEv ? 'none' : '';
+    document.getElementById('apNotesField').style.display = isEv ? 'none' : '';
+    if (isEv) {
+        const ev = parseEventNotes(r.notes || '');
+        document.getElementById('apModalTitle').textContent = (r.clubName || '').replace(/^\[Viðburður\]\s*/, '') || 'Viðburður';
+        document.getElementById('ap-evTitle').value = (r.clubName || '').replace(/^\[Viðburður\]\s*/, '');
+        document.getElementById('ap-evType').value = ['mot','namskeid','annad'].indexOf(ev.type) !== -1 ? ev.type : 'annad';
+        document.getElementById('ap-evDate').value = /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') ? ev.date : '';
+        document.getElementById('ap-evTime').value = /^\d{2}:\d{2}/.test(ev.time || '') ? ev.time.slice(0, 5) : '';
+        document.getElementById('ap-evLocation').value = r.address || ev.location || '';
+        document.getElementById('ap-evClub').value = ev.club || '';
+        document.getElementById('ap-evDesc').value = ev.desc || '';
+    }
     document.getElementById('apModal').classList.add('open');
 }
 
@@ -3400,20 +3450,22 @@ function openApModal(id) {
 function apAddToCalendar() {
     const r = apList.find(x => x.id === apEditId);
     if (!r) return;
-    const notes = r.notes || '';
-    const grab = k => { const m = notes.match(new RegExp('^' + k + ': *(.*)$', 'm')); return m ? m[1].trim() : ''; };
-    const title = (r.clubName || '').replace(/^\[Viðburður\]\s*/, '');
-    const descIdx = notes.indexOf('\n\n');
+    // Take current (possibly edited) values straight from the modal fields
+    const title = document.getElementById('ap-evTitle').value.trim() || (r.clubName || '').replace(/^\[Viðburður\]\s*/, '');
+    const type = document.getElementById('ap-evType').value;
+    const date = document.getElementById('ap-evDate').value;
+    const time = document.getElementById('ap-evTime').value;
+    const location = document.getElementById('ap-evLocation').value.trim();
+    const desc = document.getElementById('ap-evDesc').value.trim();
     closeApModal();
     document.querySelector('.admin-tab[data-tab="tab-calendar"]').click();
     addEventForm();
     document.getElementById('adm-eventTitle').value = title;
-    const dt = grab('Dagsetning'); if (dt) document.getElementById('adm-eventDate').value = dt;
-    document.getElementById('adm-eventTime').value = grab('Tími');
-    document.getElementById('adm-eventLocation').value = grab('Staðsetning');
-    const tp = grab('Tegund');
-    if (tp === 'mot' || tp === 'namskeid' || tp === 'annad') document.getElementById('adm-eventType').value = tp;
-    document.getElementById('adm-eventDesc').value = descIdx !== -1 ? notes.slice(descIdx + 2).trim() : '';
+    if (date) document.getElementById('adm-eventDate').value = date;
+    document.getElementById('adm-eventTime').value = time;
+    document.getElementById('adm-eventLocation').value = location;
+    document.getElementById('adm-eventType').value = type;
+    document.getElementById('adm-eventDesc').value = desc;
     showToast('Yfirfarðu upplýsingarnar og vistaðu viðburðinn', 'success');
 }
 
@@ -3439,6 +3491,20 @@ async function saveApplication() {
         status:       document.getElementById('ap-status').value,
         adminNotes:   document.getElementById('ap-adminNotes').value.trim(),
     };
+    const rec = apList.find(r => r.id === apEditId);
+    if (rec && isEventReq(rec)) {
+        const ev = {
+            club:     document.getElementById('ap-evClub').value.trim(),
+            type:     document.getElementById('ap-evType').value,
+            date:     document.getElementById('ap-evDate').value,
+            time:     document.getElementById('ap-evTime').value,
+            location: document.getElementById('ap-evLocation').value.trim(),
+            desc:     document.getElementById('ap-evDesc').value.trim()
+        };
+        patch.clubName = '[Viðburður] ' + document.getElementById('ap-evTitle').value.trim();
+        patch.address  = ev.location;
+        patch.notes    = serializeEventNotes(ev);
+    }
     try {
         const res = await fetch(SIGNUP_API, {
             method: 'POST',
