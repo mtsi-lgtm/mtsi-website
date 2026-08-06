@@ -2376,7 +2376,23 @@ function deleteNews(i) {
     siteData.news.splice(i, 1);
     saveData(); renderNews(); renderNewsAdmin(); showToast('Frétt eytt', 'success');
 }
-function saveNewsItem() {
+// Upload an image as a separate file in the repo (images/ folder).
+// Returns the file path to reference instead of embedding base64 data.
+async function uploadImageToRepo(dataUrl, prefix) {
+    const m = dataUrl.match(/^data:image\/(png|jpe?g|webp|gif);base64,(.*)$/s);
+    if (!m) throw new Error('Óþekkt myndsnið');
+    const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
+    const path = 'images/' + prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.' + ext;
+    const res = await fetch('/.netlify/functions/github-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'put-file', path: path, content: m[2], message: 'Upload ' + path })
+    });
+    if (!res.ok) throw new Error('Upphleðsla myndar mistókst: ' + res.status);
+    return '/' + path;
+}
+
+async function saveNewsItem() {
     const idx = parseInt(document.getElementById('adm-newsEditIdx').value);
     const item = {
         headline: document.getElementById('adm-newsHeadline').value,
@@ -2386,6 +2402,14 @@ function saveNewsItem() {
         image: tempNewsImage || ''
     };
     if (!item.headline) { showToast('Fyrirsögn vantar', 'error'); return; }
+    if (item.image && item.image.indexOf('data:') === 0) {
+        showToast('Hleð upp mynd...', 'success');
+        try {
+            item.image = await uploadImageToRepo(item.image, 'news');
+        } catch (e) {
+            // Fallback: keep the image embedded in the page (old behaviour)
+        }
+    }
     if (idx === -1) siteData.news.unshift(item);
     else siteData.news[idx] = item;
     tempNewsImage = '';
