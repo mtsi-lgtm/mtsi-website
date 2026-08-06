@@ -179,6 +179,8 @@
             z-index:2000;
             animation:ddIn .5s var(--ease) both;
         }
+        /* Invisible bridge over the 10px gap so hover isn't lost when moving into the dropdown */
+        .dropdown::before { content:''; position:absolute; top:-14px; left:-10px; right:-10px; height:14px; }
         .nav-list>li.open .dropdown { display:block; }
         .nav-list>li.open>a .fa-chevron-down { transform:rotate(180deg); }
         .nav-list>li>a .fa-chevron-down { transition:transform .4s var(--ease); margin-left:2px; display:inline-block; }
