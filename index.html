@@ -650,6 +650,9 @@
         .admin-item p { font-size:12px; color:#8a8f9f; }
         .admin-item-actions { display:flex; gap:6px; margin-top:10px; }
         .admin-item .badge { display:inline-block; background:#e8edfb; color:#2c4fc4; font-size:10px; font-weight:700; padding:2px 9px; border-radius:99px; margin-right:6px; }
+        .admin-item[draggable="true"] { cursor:grab; }
+        .admin-item.dragging { opacity:.45; border-color:#3b5fd9; cursor:grabbing; }
+        .news-drag-handle { position:absolute; top:16px; right:16px; color:#c6cad6; font-size:14px; pointer-events:none; }
 
         .editable-highlight { outline:2px dashed var(--gold) !important; outline-offset:5px; cursor:pointer; position:relative; }
         .editable-highlight::after {
@@ -2205,7 +2208,8 @@ function renderNewsAdmin() {
     siteData.news.forEach((n, i) => {
         const imgBadge = n.image ? '<span class="badge" style="background:#4caf50">Mynd</span>' : '';
         list.innerHTML += `
-        <div class="admin-item">
+        <div class="admin-item" draggable="true" data-idx="${i}">
+            <i class="fas fa-grip-vertical news-drag-handle"></i>
             <span class="badge">${n.date}</span>${imgBadge}
             <h4>${n.headline}</h4>
             <p>${n.body.substring(0, 80)}...</p>
@@ -2215,6 +2219,45 @@ function renderNewsAdmin() {
             </div>
         </div>`;
     });
+    initNewsDrag(list);
+}
+
+// Drag & drop reordering of news in the admin panel
+let _newsDragEl = null;
+function initNewsDrag(list) {
+    list.querySelectorAll('.admin-item').forEach(item => {
+        item.addEventListener('dragstart', e => {
+            _newsDragEl = item;
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            try { e.dataTransfer.setData('text/plain', item.dataset.idx); } catch(_) {}
+        });
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            if (!_newsDragEl) return;
+            _newsDragEl = null;
+            const order = [...list.querySelectorAll('.admin-item')].map(el => parseInt(el.dataset.idx, 10));
+            if (order.some((v, i) => v !== i)) {
+                siteData.news = order.map(i => siteData.news[i]);
+                saveData();
+                renderNews();
+                renderNewsAdmin();
+                showToast('Röðun frétta vistuð!', 'success');
+            }
+        });
+    });
+    if (!list._dragInit) {
+        list._dragInit = true;
+        list.addEventListener('dragover', e => {
+            e.preventDefault();
+            if (!_newsDragEl) return;
+            e.dataTransfer.dropEffect = 'move';
+            const others = [...list.querySelectorAll('.admin-item:not(.dragging)')];
+            const after = others.find(el => e.clientY < el.getBoundingClientRect().top + el.offsetHeight / 2);
+            if (after) list.insertBefore(_newsDragEl, after); else list.appendChild(_newsDragEl);
+        });
+        list.addEventListener('drop', e => e.preventDefault());
+    }
 }
 function addNewsForm() {
     document.getElementById('newsFormLabel').textContent = 'Ný frétt';
