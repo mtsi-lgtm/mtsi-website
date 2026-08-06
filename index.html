@@ -894,7 +894,7 @@
             <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
             <div class="header-action-text"><strong>Keppnisdagatal</strong><span>Fylgstu með viðburðum<br>og keppnum</span></div>
         </a>
-        <a class="header-action" href="#">
+        <a class="header-action" href="#" onclick="navigateTo('eventSignupSection');return false">
             <div class="icon-circle"><i class="fas fa-plus-circle"></i></div>
             <div class="header-action-text"><strong>Skrá viðburð</strong><span>Bættu keppni eða<br>námskeiði við</span></div>
         </a>
@@ -1159,6 +1159,56 @@
         <h2 class="section-title" id="videoTitle">Myndbandasafn</h2>
         <p class="section-subtitle" id="videoSubtitle">Myndböndin og hápunktar frá keppnum</p>
         <div id="videoText" class="page-prose"></div>
+    </div>
+</section>
+</div>
+
+<!-- ===== PAGE: EVENT SIGNUP (member clubs submit events) ===== -->
+<div data-page="eventSignupSection" class="page-view">
+<section class="content-section" style="min-height:60vh">
+    <div style="max-width:780px;margin:0 auto">
+        <a href="#" class="back-link" onclick="navigateTo('home');return false"><i class="fas fa-arrow-left"></i> Til baka á forsíðu</a>
+        <h2 class="section-title">Skrá viðburð</h2>
+        <p class="section-subtitle">Aðildarfélög geta óskað eftir að fá mót, námskeið eða aðra viðburði á keppnisdagatal MTSÍ</p>
+        <div class="form-shell">
+            <div class="form-intro" id="eventSignupIntro">
+                <p>Fylltu út upplýsingar um viðburðinn. Stjórn MTSÍ fer yfir beiðnina og birtir viðburðinn á keppnisdagatalinu að lokinni yfirferð.</p>
+                <p class="form-intro-note">Reitir merktir með <span class="req-star">*</span> eru skyldubundnir.</p>
+            </div>
+            <div id="eventSignupForm">
+                <h3 class="form-legend">Viðburður</h3>
+                <div class="signup-grid">
+                    <div class="signup-field"><label>Nafn viðburðar <span class="req-star">*</span></label><input type="text" id="ev-title" placeholder="t.d. Íslandsmót í muaythai"></div>
+                    <div class="signup-field"><label>Tegund</label><select id="ev-type"><option value="mot">Mót</option><option value="namskeid">Námskeið</option><option value="annad">Annað</option></select></div>
+                </div>
+                <div class="signup-grid">
+                    <div class="signup-field"><label>Dagsetning <span class="req-star">*</span></label><input type="date" id="ev-date"></div>
+                    <div class="signup-field"><label>Tími</label><input type="time" id="ev-time"></div>
+                </div>
+                <div class="signup-field"><label>Staðsetning</label><input type="text" id="ev-location" placeholder="Húsnæði, gata, bær"></div>
+                <div class="signup-field" style="margin-top:16px"><label>Lýsing</label><textarea id="ev-desc" rows="4" placeholder="Nánari upplýsingar um viðburðinn..."></textarea></div>
+                <h3 class="form-legend">Félag og tengiliður</h3>
+                <div class="signup-grid">
+                    <div class="signup-field"><label>Aðildarfélag <span class="req-star">*</span></label><input type="text" id="ev-club" placeholder="Nafn félagsins"></div>
+                    <div class="signup-field"><label>Nafn tengiliðs <span class="req-star">*</span></label><input type="text" id="ev-contactName" placeholder="Fullt nafn" autocomplete="name"></div>
+                </div>
+                <div class="signup-grid">
+                    <div class="signup-field"><label>Netfang <span class="req-star">*</span></label><input type="email" id="ev-email" placeholder="netfang@felag.is" autocomplete="email"></div>
+                    <div class="signup-field"><label>Sími</label><input type="tel" id="ev-phone" placeholder="000-0000" autocomplete="tel"></div>
+                </div>
+                <div id="ev-error" class="form-error" style="display:none"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-ghost" onclick="navigateTo('home')">Hætta við</button>
+                    <button type="button" class="btn-primary" id="ev-submitBtn" onclick="submitEventSignup()"><i class="fas fa-paper-plane"></i> Senda beiðni</button>
+                </div>
+            </div>
+            <div id="eventSignupSuccess" style="display:none;text-align:center;padding:40px 20px">
+                <div class="success-orb"><i class="fas fa-check"></i></div>
+                <h3 class="success-title">Beiðni móttekin</h3>
+                <p class="success-text">Takk fyrir! Stjórn MTSÍ fer yfir beiðnina og birtir viðburðinn á keppnisdagatalinu að lokinni yfirferð. Staðfesting hefur verið send á netfangið þitt.</p>
+                <button class="btn-ghost" onclick="navigateTo('home')">Til baka á forsíðu</button>
+            </div>
+        </div>
     </div>
 </section>
 </div>
@@ -1519,6 +1569,7 @@
         <div class="ap-modal-footer">
             <button class="admin-btn admin-btn-danger" onclick="deleteApplication()"><i class="fas fa-trash"></i> Eyða</button>
             <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-gold" id="apToCalendarBtn" style="display:none" onclick="apAddToCalendar()"><i class="fas fa-calendar-plus"></i> Setja á dagatal</button>
                 <button class="admin-btn admin-btn-secondary" onclick="closeApModal()">Hætta við</button>
                 <button class="admin-btn admin-btn-primary" onclick="saveApplication()"><i class="fas fa-save"></i> Vista</button>
             </div>
@@ -3037,6 +3088,64 @@ async function submitSignup() {
     }
 }
 
+// ============================================================
+// EVENT SIGNUP (member clubs request calendar events)
+// ============================================================
+function showEventError(msg) {
+    const el = document.getElementById('ev-error');
+    el.textContent = msg; el.style.display = 'block';
+}
+function hideEventError() {
+    const el = document.getElementById('ev-error');
+    if (el) el.style.display = 'none';
+}
+async function submitEventSignup() {
+    hideEventError();
+    const v = id => document.getElementById(id).value.trim();
+    const title = v('ev-title'), type = document.getElementById('ev-type').value,
+          date = v('ev-date'), time = v('ev-time'), location = v('ev-location'),
+          desc = v('ev-desc'), club = v('ev-club'),
+          contactName = v('ev-contactName'), email = v('ev-email'), phone = v('ev-phone');
+    if (!title) { showEventError('Vinsamlegast sláðu inn nafn viðburðar.'); return; }
+    if (!date) { showEventError('Vinsamlegast veldu dagsetningu.'); return; }
+    if (!club) { showEventError('Vinsamlegast sláðu inn nafn aðildarfélags.'); return; }
+    if (!contactName) { showEventError('Vinsamlegast sláðu inn nafn tengiliðs.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showEventError('Netfangið virðist ekki gilt.'); return; }
+    const data = {
+        clubName: '[Viðburður] ' + title,
+        contactName: contactName,
+        email: email,
+        phone: phone,
+        address: location,
+        notes: 'Félag: ' + club + '\nTegund: ' + type + '\nDagsetning: ' + date + '\nTími: ' + time +
+               '\nStaðsetning: ' + location + (desc ? '\n\n' + desc : '')
+    };
+    const btn = document.getElementById('ev-submitBtn');
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sendi...';
+    try {
+        const res = await fetch(SIGNUP_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'submit', data: data })
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.ok) throw new Error(result.error || 'Tókst ekki að senda beiðni.');
+        document.getElementById('eventSignupForm').style.display = 'none';
+        document.getElementById('eventSignupIntro').style.display = 'none';
+        document.getElementById('eventSignupSuccess').style.display = 'block';
+        ['ev-title','ev-date','ev-time','ev-location','ev-desc','ev-club','ev-contactName','ev-email','ev-phone'].forEach(id => {
+            const e = document.getElementById(id); if (e) e.value = '';
+        });
+    } catch (e) {
+        showEventError(e.message || 'Villa kom upp. Reyndu aftur.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+    }
+}
+
 // Reset signup form view whenever user navigates to it fresh
 const _origNavigateTo = navigateTo;
 navigateTo = function(pageId) {
@@ -3081,6 +3190,17 @@ function saveAppsToken() {
     document.getElementById('apTokenInput').value = '';
     loadApplications();
 }
+
+const _origNavigateToEv = navigateTo;
+navigateTo = function(pageId) {
+    _origNavigateToEv(pageId);
+    if (pageId === 'eventSignupSection') {
+        const f = document.getElementById('eventSignupForm');
+        const intro = document.getElementById('eventSignupIntro');
+        const ok = document.getElementById('eventSignupSuccess');
+        if (f && ok) { f.style.display = ''; if (intro) intro.style.display = ''; ok.style.display = 'none'; hideEventError(); }
+    }
+};
 
 function promptAppsToken() {
     document.getElementById('apTokenModal').classList.add('active');
@@ -3260,7 +3380,30 @@ function openApModal(id) {
     document.getElementById('ap-notes').value        = r.notes        || '';
     document.getElementById('ap-status').value       = r.status       || 'pending';
     document.getElementById('ap-adminNotes').value   = r.adminNotes   || '';
+    const evBtn = document.getElementById('apToCalendarBtn');
+    if (evBtn) evBtn.style.display = (r.clubName || '').indexOf('[Viðburður]') === 0 ? '' : 'none';
     document.getElementById('apModal').classList.add('open');
+}
+
+// Prefill the calendar event form from an event request application
+function apAddToCalendar() {
+    const r = apList.find(x => x.id === apEditId);
+    if (!r) return;
+    const notes = r.notes || '';
+    const grab = k => { const m = notes.match(new RegExp('^' + k + ': *(.*)$', 'm')); return m ? m[1].trim() : ''; };
+    const title = (r.clubName || '').replace(/^\[Viðburður\]\s*/, '');
+    const descIdx = notes.indexOf('\n\n');
+    closeApModal();
+    document.querySelector('.admin-tab[data-tab="tab-calendar"]').click();
+    addEventForm();
+    document.getElementById('adm-eventTitle').value = title;
+    const dt = grab('Dagsetning'); if (dt) document.getElementById('adm-eventDate').value = dt;
+    document.getElementById('adm-eventTime').value = grab('Tími');
+    document.getElementById('adm-eventLocation').value = grab('Staðsetning');
+    const tp = grab('Tegund');
+    if (tp === 'mot' || tp === 'namskeid' || tp === 'annad') document.getElementById('adm-eventType').value = tp;
+    document.getElementById('adm-eventDesc').value = descIdx !== -1 ? notes.slice(descIdx + 2).trim() : '';
+    showToast('Yfirfarðu upplýsingarnar og vistaðu viðburðinn', 'success');
 }
 
 function closeApModal() {
