@@ -27,7 +27,15 @@ exports.handler = async (event) => {
       const res = await fetch('https://api.github.com/repos/' + repo + '/contents/index.html', { headers: ghHeaders });
       const data = await res.json();
       if (!res.ok) return { statusCode: res.status, headers, body: JSON.stringify(data) };
-      return { statusCode: 200, headers, body: JSON.stringify({ sha: data.sha, content: data.content }) };
+      let fileContent = data.content;
+      // Contents API returns empty content for files over 1MB; fetch the blob instead
+      if (!fileContent) {
+        const blobRes = await fetch('https://api.github.com/repos/' + repo + '/git/blobs/' + data.sha, { headers: ghHeaders });
+        const blobData = await blobRes.json();
+        if (!blobRes.ok) return { statusCode: blobRes.status, headers, body: JSON.stringify(blobData) };
+        fileContent = blobData.content;
+      }
+      return { statusCode: 200, headers, body: JSON.stringify({ sha: data.sha, content: fileContent }) };
     }
     if (action === 'put') {
       const res = await fetch('https://api.github.com/repos/' + repo + '/contents/index.html', {
