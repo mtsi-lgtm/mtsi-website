@@ -15,7 +15,7 @@ exports.handler = async (event) => {
     if (!GH_TOKEN) {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'GH_TOKEN not configured' }) };
     }
-    const { action, content, sha, message } = JSON.parse(event.body);
+    const { action, content, sha, message, path } = JSON.parse(event.body);
     const repo = 'mtsi-lgtm/mtsi-website';
     const ghHeaders = {
       'Authorization': 'token ' + GH_TOKEN,
@@ -46,6 +46,22 @@ exports.handler = async (event) => {
       const data = await res.json();
       if (!res.ok) return { statusCode: res.status, headers, body: JSON.stringify(data) };
       return { statusCode: 200, headers, body: JSON.stringify({ ok: true, sha: data.content.sha }) };
+    }
+    if (action === 'put-file') {
+      // Commit an image as a separate file. Restricted to the images/ folder.
+      if (!path || !/^images\/[A-Za-z0-9._-]{1,100}$/.test(path) || path.indexOf('..') !== -1) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid path' }) };
+      }
+      const fileUrl = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+      let existingSha;
+      const check = await fetch(fileUrl, { headers: ghHeaders });
+      if (check.ok) existingSha = (await check.json()).sha;
+      const putBody = { message: message || 'Upload image via admin', content };
+      if (existingSha) putBody.sha = existingSha;
+      const res = await fetch(fileUrl, { method: 'PUT', headers: ghHeaders, body: JSON.stringify(putBody) });
+      const data = await res.json();
+      if (!res.ok) return { statusCode: res.status, headers, body: JSON.stringify(data) };
+      return { statusCode: 200, headers, body: JSON.stringify({ ok: true, path: path, sha: data.content.sha }) };
     }
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid action' }) };
   } catch (e) {
