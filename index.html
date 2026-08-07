@@ -1380,25 +1380,6 @@
                 <button class="admin-btn admin-btn-gold" onclick="addClubForm()"><i class="fas fa-plus"></i> Nýtt félag</button>
             </div>
             <div id="clubsAdminList"></div>
-            <div id="clubFormArea" style="display:none">
-                <h4 style="margin-bottom:12px;color:#003897" id="clubFormLabel">Nýtt félag</h4>
-                <div class="admin-field"><label>Nafn</label><input id="adm-clubName"></div>
-                <div class="admin-field"><label>Staðsetning</label><input id="adm-clubLocation"></div>
-                <div class="admin-field">
-                    <label>Merki félagsins (valfrjálst)</label>
-                    <div class="img-upload-area" id="clubImgUploadArea" onclick="document.getElementById('clubImgFileInput').click()" style="padding:12px">
-                        <div class="upload-placeholder" id="clubImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Velja merki</div>
-                        <img id="clubImgPreview" style="display:none;max-height:60px">
-                        <button class="img-remove-btn" id="clubImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeClubImg()"><i class="fas fa-times"></i></button>
-                    </div>
-                    <input type="file" id="clubImgFileInput" accept="image/*" style="display:none" onchange="handleClubImgUpload(event)">
-                </div>
-                <input type="hidden" id="adm-clubEditIdx" value="-1">
-                <div class="btn-row">
-                    <button class="admin-btn admin-btn-primary" onclick="saveClubItem()"><i class="fas fa-save"></i> Vista</button>
-                    <button class="admin-btn admin-btn-secondary" onclick="cancelClubForm()">Hætta við</button>
-                </div>
-            </div>
         </div>
 
         <!-- TAB: About -->
@@ -1420,17 +1401,6 @@
                 <button class="admin-btn admin-btn-gold" onclick="addNavForm()"><i class="fas fa-plus"></i> Nýtt atriði</button>
             </div>
             <div id="navAdminList"></div>
-            <div id="navFormArea" style="display:none">
-                <h4 style="margin-bottom:12px;color:#003897" id="navFormLabel">Nýtt valmyndaratriði</h4>
-                <div class="admin-field"><label>Titill</label><input id="adm-navTitle"></div>
-                <div class="admin-field"><label>Tengill (URL)</label><input id="adm-navLink" value="#"></div>
-                <div class="admin-field"><label>Undirflokkar (einn per línu: Titill | URL)</label><textarea id="adm-navSubs" placeholder="Um MTSÍ | #&#10;Stjórn | #"></textarea></div>
-                <input type="hidden" id="adm-navEditIdx" value="-1">
-                <div class="btn-row">
-                    <button class="admin-btn admin-btn-primary" onclick="saveNavItem()"><i class="fas fa-save"></i> Vista</button>
-                    <button class="admin-btn admin-btn-secondary" onclick="cancelNavForm()">Hætta við</button>
-                </div>
-            </div>
         </div>
 
 
@@ -1449,17 +1419,6 @@
         <div class="admin-tab-content" id="tab-pages">
             <p style="font-size:12px;color:#888;margin-bottom:16px">Breyttu efni á undirsíðum. Texti styður HTML.</p>
             <div id="pagesAdminList"></div>
-            <div id="pageFormArea" style="display:none">
-                <h4 style="margin-bottom:12px;color:#003897" id="pageFormLabel">Breyta síðu</h4>
-                <div class="admin-field"><label>Titill</label><input id="adm-pageTitle"></div>
-                <div class="admin-field"><label>Undirtitill</label><input id="adm-pageSubtitle"></div>
-                <div class="admin-field"><label>Efni (HTML)</label><textarea id="adm-pageBody" style="min-height:180px"></textarea></div>
-                <input type="hidden" id="adm-pageEditKey" value="">
-                <div class="btn-row">
-                    <button class="admin-btn admin-btn-primary" onclick="savePageItem()"><i class="fas fa-save"></i> Vista</button>
-                    <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('pageFormArea').style.display='none'">Hætta við</button>
-                </div>
-            </div>
         </div>
 
         <!-- TAB: Settings -->
@@ -1553,6 +1512,98 @@
                 <button class="admin-btn admin-btn-gold" id="apToCalendarBtn" style="display:none" onclick="apAddToCalendar()"><i class="fas fa-calendar-plus"></i> Setja á dagatal</button>
                 <button class="admin-btn admin-btn-secondary" onclick="closeApModal()">Hætta við</button>
                 <button class="admin-btn admin-btn-primary" onclick="saveApplication()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CLUB FORM MODAL ===== -->
+<div class="ap-modal-overlay" id="clubFormModal" onclick="if(event.target===this)cancelClubForm()">
+    <div class="ap-modal" style="max-width:520px">
+        <div class="ap-modal-header">
+            <div>
+                <h3 id="clubFormLabel">Nýtt félag</h3>
+                <div class="ap-modal-meta">Birtist í lista aðildarfélaga þegar vistað er</div>
+            </div>
+            <button class="ap-modal-close" onclick="cancelClubForm()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field"><label>Nafn</label><input type="text" id="adm-clubName"></div>
+                <div class="ap-modal-field"><label>Staðsetning</label><input type="text" id="adm-clubLocation"></div>
+                <div class="ap-modal-field full">
+                    <label>Merki félagsins (valfrjálst)</label>
+                    <div class="img-upload-area" id="clubImgUploadArea" onclick="document.getElementById('clubImgFileInput').click()" style="padding:12px">
+                        <div class="upload-placeholder" id="clubImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Velja merki</div>
+                        <img id="clubImgPreview" style="display:none;max-height:60px">
+                        <button class="img-remove-btn" id="clubImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeClubImg()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <input type="file" id="clubImgFileInput" accept="image/*" style="display:none" onchange="handleClubImgUpload(event)">
+                </div>
+            </div>
+            <input type="hidden" id="adm-clubEditIdx" value="-1">
+        </div>
+        <div class="ap-modal-footer">
+            <div></div>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="cancelClubForm()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveClubItem()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== NAV FORM MODAL ===== -->
+<div class="ap-modal-overlay" id="navFormModal" onclick="if(event.target===this)cancelNavForm()">
+    <div class="ap-modal" style="max-width:520px">
+        <div class="ap-modal-header">
+            <div>
+                <h3 id="navFormLabel">Nýtt valmyndaratriði</h3>
+                <div class="ap-modal-meta">Valmyndin efst á síðunni</div>
+            </div>
+            <button class="ap-modal-close" onclick="cancelNavForm()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field"><label>Titill</label><input type="text" id="adm-navTitle"></div>
+                <div class="ap-modal-field"><label>Tengill (URL)</label><input type="text" id="adm-navLink" value="#"></div>
+                <div class="ap-modal-field full"><label>Undirflokkar (einn per línu: Titill | URL)</label><textarea id="adm-navSubs" rows="4" placeholder="Um MTSÍ | #&#10;Stjórn | #"></textarea></div>
+            </div>
+            <input type="hidden" id="adm-navEditIdx" value="-1">
+        </div>
+        <div class="ap-modal-footer">
+            <div></div>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="cancelNavForm()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveNavItem()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== PAGE FORM MODAL ===== -->
+<div class="ap-modal-overlay" id="pageFormModal" onclick="if(event.target===this)cancelPageForm()">
+    <div class="ap-modal">
+        <div class="ap-modal-header">
+            <div>
+                <h3 id="pageFormLabel">Breyta síðu</h3>
+                <div class="ap-modal-meta">Efni undirsíðu — texti styður HTML</div>
+            </div>
+            <button class="ap-modal-close" onclick="cancelPageForm()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field"><label>Titill</label><input type="text" id="adm-pageTitle"></div>
+                <div class="ap-modal-field"><label>Undirtitill</label><input type="text" id="adm-pageSubtitle"></div>
+                <div class="ap-modal-field full"><label>Efni (HTML)</label><textarea id="adm-pageBody" rows="9"></textarea></div>
+            </div>
+            <input type="hidden" id="adm-pageEditKey" value="">
+        </div>
+        <div class="ap-modal-footer">
+            <div></div>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="cancelPageForm()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="savePageItem()"><i class="fas fa-save"></i> Vista</button>
             </div>
         </div>
     </div>
@@ -2833,7 +2884,7 @@ function addClubForm() {
     document.getElementById('adm-clubEditIdx').value = '-1';
     tempClubImage = '';
     updateImgPreview('clubImg', '');
-    document.getElementById('clubFormArea').style.display = 'block';
+    document.getElementById('clubFormModal').classList.add('open');
 }
 function editClub(i) {
     const c = siteData.clubs[i];
@@ -2843,7 +2894,7 @@ function editClub(i) {
     document.getElementById('adm-clubEditIdx').value = i;
     tempClubImage = c.image || '';
     updateImgPreview('clubImg', tempClubImage);
-    document.getElementById('clubFormArea').style.display = 'block';
+    document.getElementById('clubFormModal').classList.add('open');
 }
 function deleteClub(i) {
     if (!confirm('Eyða þessu félagi?')) return;
@@ -2862,7 +2913,7 @@ function saveClubItem() {
     siteData.clubsMeta.subtitle = document.getElementById('adm-clubsSubtitle').value;
     saveData(); renderClubs(); renderClubsAdmin(); cancelClubForm(); showToast('Félag vistað!', 'success');
 }
-function cancelClubForm() { document.getElementById('clubFormArea').style.display = 'none'; }
+function cancelClubForm() { document.getElementById('clubFormModal').classList.remove('open'); }
 
 // ============================================================
 // ABOUT SAVE
@@ -2912,7 +2963,7 @@ function addNavForm() {
     document.getElementById('adm-navLink').value = '#';
     document.getElementById('adm-navSubs').value = '';
     document.getElementById('adm-navEditIdx').value = '-1';
-    document.getElementById('navFormArea').style.display = 'block';
+    document.getElementById('navFormModal').classList.add('open');
 }
 function editNav(i) {
     const n = siteData.nav[i];
@@ -2921,7 +2972,7 @@ function editNav(i) {
     document.getElementById('adm-navLink').value = n.link;
     document.getElementById('adm-navSubs').value = (n.subs||[]).map(s => s.title + ' | ' + s.link).join('\n');
     document.getElementById('adm-navEditIdx').value = i;
-    document.getElementById('navFormArea').style.display = 'block';
+    document.getElementById('navFormModal').classList.add('open');
 }
 function deleteNav(i) {
     if (!confirm('Eyða þessu valmyndaratriði?')) return;
@@ -2941,7 +2992,8 @@ function saveNavItem() {
     else siteData.nav[idx] = item;
     saveData(); renderNav(); renderNavAdmin(); cancelNavForm(); showToast('Valmynd vistuð!', 'success');
 }
-function cancelNavForm() { document.getElementById('navFormArea').style.display = 'none'; }
+function cancelNavForm() { document.getElementById('navFormModal').classList.remove('open'); }
+function cancelPageForm() { document.getElementById('pageFormModal').classList.remove('open'); }
 
 // ============================================================
 // PAGES (sub-sections) RENDER & CRUD
@@ -2991,7 +3043,7 @@ function editPage(key) {
     document.getElementById('adm-pageSubtitle').value = page.subtitle;
     document.getElementById('adm-pageBody').value = page.body;
     document.getElementById('adm-pageEditKey').value = key;
-    document.getElementById('pageFormArea').style.display = 'block';
+    document.getElementById('pageFormModal').classList.add('open');
 }
 
 function savePageItem() {
@@ -3002,7 +3054,7 @@ function savePageItem() {
         body: document.getElementById('adm-pageBody').value
     };
     saveData(); renderPages(); renderPagesAdmin();
-    document.getElementById('pageFormArea').style.display = 'none';
+    cancelPageForm();
     showToast(PAGE_LABELS[key] + ' vistuð!', 'success');
 }
 
