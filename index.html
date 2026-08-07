@@ -1362,28 +1362,6 @@
                 <button class="admin-btn admin-btn-gold" onclick="addNewsForm()"><i class="fas fa-plus"></i> Ný frétt</button>
             </div>
             <div id="newsAdminList"></div>
-            <!-- Add/Edit form (hidden) -->
-            <div id="newsFormArea" style="display:none">
-                <h4 style="margin-bottom:12px;color:#003897" id="newsFormLabel">Ný frétt</h4>
-                <div class="admin-field"><label>Fyrirsögn</label><input id="adm-newsHeadline"></div>
-                <div class="admin-field"><label>Texti</label><textarea id="adm-newsBody"></textarea></div>
-                <div class="admin-field">
-                    <label>Mynd / plakat (valfrjálst)</label>
-                    <div class="img-upload-area" id="newsImgUploadArea" onclick="document.getElementById('newsImgFileInput').click()">
-                        <div class="upload-placeholder" id="newsImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Smelltu til að velja mynd</div>
-                        <img id="newsImgPreview" style="display:none;max-height:100px">
-                        <button class="img-remove-btn" id="newsImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeNewsImg()"><i class="fas fa-times"></i></button>
-                    </div>
-                    <input type="file" id="newsImgFileInput" accept="image/*" style="display:none" onchange="handleNewsImgUpload(event)">
-                </div>
-                <div class="admin-field"><label>Dagsetning (YYYY-MM-DD)</label><input id="adm-newsDate" type="date"></div>
-                <div class="admin-field"><label>Höfundur</label><input id="adm-newsAuthor" value="MTSÍ"></div>
-                <input type="hidden" id="adm-newsEditIdx" value="-1">
-                <div class="btn-row">
-                    <button class="admin-btn admin-btn-primary" onclick="saveNewsItem()"><i class="fas fa-save"></i> Vista</button>
-                    <button class="admin-btn admin-btn-secondary" onclick="cancelNewsForm()">Hætta við</button>
-                </div>
-            </div>
         </div>
 
         <!-- TAB: Calendar -->
@@ -1575,6 +1553,44 @@
                 <button class="admin-btn admin-btn-gold" id="apToCalendarBtn" style="display:none" onclick="apAddToCalendar()"><i class="fas fa-calendar-plus"></i> Setja á dagatal</button>
                 <button class="admin-btn admin-btn-secondary" onclick="closeApModal()">Hætta við</button>
                 <button class="admin-btn admin-btn-primary" onclick="saveApplication()"><i class="fas fa-save"></i> Vista</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== NEWS FORM MODAL ===== -->
+<div class="ap-modal-overlay" id="newsFormModal" onclick="if(event.target===this)cancelNewsForm()">
+    <div class="ap-modal" style="max-width:520px">
+        <div class="ap-modal-header">
+            <div>
+                <h3 id="newsFormLabel">Ný frétt</h3>
+                <div class="ap-modal-meta">Birtist á forsíðunni þegar vistað er</div>
+            </div>
+            <button class="ap-modal-close" onclick="cancelNewsForm()">&times;</button>
+        </div>
+        <div class="ap-modal-body">
+            <div class="ap-modal-grid">
+                <div class="ap-modal-field full"><label>Fyrirsögn</label><input type="text" id="adm-newsHeadline"></div>
+                <div class="ap-modal-field full"><label>Texti</label><textarea id="adm-newsBody" rows="5"></textarea></div>
+                <div class="ap-modal-field full">
+                    <label>Mynd / plakat (valfrjálst)</label>
+                    <div class="img-upload-area" id="newsImgUploadArea" onclick="document.getElementById('newsImgFileInput').click()">
+                        <div class="upload-placeholder" id="newsImgPlaceholder"><i class="fas fa-cloud-upload-alt"></i>Smelltu til að velja mynd</div>
+                        <img id="newsImgPreview" style="display:none;max-height:100px">
+                        <button class="img-remove-btn" id="newsImgRemoveBtn" style="display:none" onclick="event.stopPropagation();removeNewsImg()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <input type="file" id="newsImgFileInput" accept="image/*" style="display:none" onchange="handleNewsImgUpload(event)">
+                </div>
+                <div class="ap-modal-field"><label>Dagsetning</label><input type="date" id="adm-newsDate"></div>
+                <div class="ap-modal-field"><label>Höfundur</label><input type="text" id="adm-newsAuthor" value="MTSÍ"></div>
+            </div>
+            <input type="hidden" id="adm-newsEditIdx" value="-1">
+        </div>
+        <div class="ap-modal-footer">
+            <div></div>
+            <div style="display:flex;gap:8px">
+                <button class="admin-btn admin-btn-secondary" onclick="cancelNewsForm()">Hætta við</button>
+                <button class="admin-btn admin-btn-primary" onclick="saveNewsItem()"><i class="fas fa-save"></i> Vista</button>
             </div>
         </div>
     </div>
@@ -2732,7 +2748,7 @@ function addNewsForm() {
     document.getElementById('adm-newsEditIdx').value = '-1';
     tempNewsImage = '';
     updateImgPreview('newsImg', '');
-    document.getElementById('newsFormArea').style.display = 'block';
+    document.getElementById('newsFormModal').classList.add('open');
 }
 function editNews(i) {
     const n = siteData.news[i];
@@ -2744,7 +2760,7 @@ function editNews(i) {
     document.getElementById('adm-newsEditIdx').value = i;
     tempNewsImage = n.image || '';
     updateImgPreview('newsImg', tempNewsImage);
-    document.getElementById('newsFormArea').style.display = 'block';
+    document.getElementById('newsFormModal').classList.add('open');
 }
 function deleteNews(i) {
     if (!confirm('Eyða þessari frétt?')) return;
@@ -2790,7 +2806,7 @@ async function saveNewsItem() {
     tempNewsImage = '';
     saveData(); renderNews(); renderNewsAdmin(); cancelNewsForm(); showToast('Frétt vistuð!', 'success');
 }
-function cancelNewsForm() { document.getElementById('newsFormArea').style.display = 'none'; }
+function cancelNewsForm() { document.getElementById('newsFormModal').classList.remove('open'); }
 
 // ============================================================
 // CLUBS CRUD
