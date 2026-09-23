@@ -8,7 +8,7 @@
 //   { action: "update", token, id, patch }         -> ADMIN:  update status/notes/fields
 //   { action: "delete", token, id }                -> ADMIN:  remove a record
 
-const { getStore } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 const STORE_NAME = "mtsi-signups";
 const KEY = "all";
@@ -31,12 +31,20 @@ function sanitize(s, max = 500) {
   return String(s).slice(0, max).replace(/[\u0000-\u001F\u007F]/g, "");
 }
 
-function getStoreInstance() {
-  return getStore({
-    name: STORE_NAME,
-    siteID: process.env.SITE_ID || process.env.NETLIFY_SITE_ID || process.env.MTSI_SITE_ID,
-    token: process.env.NETLIFY_API_TOKEN,
-  });
+// Use the Blobs credentials Netlify injects into every function invocation.
+// These are always valid for this site, unlike a personal NETLIFY_API_TOKEN
+// (an expired/invalid token caused the 401).
+function getStoreInstance(event) {
+  try {
+    connectLambda(event);
+    return getStore(STORE_NAME);
+  } catch (e) {
+    // Fallback: explicit credentials (e.g. local dev without Netlify context)
+    const siteID = process.env.SITE_ID || process.env.NETLIFY_SITE_ID || process.env.MTSI_SITE_ID;
+    const token = process.env.NETLIFY_API_TOKEN;
+    if (siteID && token) return getStore({ name: STORE_NAME, siteID, token });
+    throw e;
+  }
 }
 
 async function loadAll(store) {
@@ -72,7 +80,7 @@ exports.handler = async (event) => {
   const { action } = body;
 
   try {
-    const store = getStoreInstance();
+    const store = getStoreInstance(event);
 
     // ------- PUBLIC: submit a new application -------
     if (action === "submit") {
